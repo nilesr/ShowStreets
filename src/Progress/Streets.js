@@ -75,12 +75,12 @@ Progress.streets = (function Streets($, L) {
 					//console.log(feature);
 					switch (feature.properties.type) {
 						case "footway" :
-							tempStyle.color = "#ccc";
+							tempStyle.color = "#888";
 							tempStyle.dashArray = "3, 2"
 							break;
 						case "crosswalk":
-							tempStyle.color = "#888";
-							tempStyle.opacity = 0.25;
+							tempStyle.color = "#444";
+							//tempStyle.opacity = 0.25;
 							break;
 					}
 
