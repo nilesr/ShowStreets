@@ -4,7 +4,7 @@ Progress.streets = (function Streets($, L) {
   var self = {};
 
   function _init() {
-    // Styleing: http://leafletjs.com/examples/geojson.html
+    // Styling: http://leafletjs.com/examples/geojson.html
     // http://leafletjs.com/reference.html#path-dasharray
     // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
     var mystyle = {
