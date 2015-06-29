@@ -24,8 +24,8 @@ Progress.streets = (function Streets($, L) {
 						} else {
 						  var plural = "people have";
 						}
-						console.log(feature.geometry)
 						layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id,"\">Audit</a>")); 
+						//if (feature.properties.type == "")
 					});
 				}
 				catch(e) {
@@ -47,12 +47,13 @@ Progress.streets = (function Streets($, L) {
 			style: function(feature) {
 				//console.log(feature.properties.type);
 				var tempStyle = $.extend(true, {}, mystyle);
-				var randomInt = Math.floor(Math.random() * 5);
-
-				tempStyle.color = Color.Pallet.sequential(randomInt);
+				$.ajaxSetup({async: false}); // This is bad, but there is no other way to do it because it has to be returned from this function and cannot be re-set later.
+				$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
+					tempStyle.color = Color.Pallet.sequential(parseInt(data));
+				});
 				tempStyle.opacity = 0.75;
 				tempStyle.weight = 3;
-
+				console.log(tempStyle.color)
 				return tempStyle;
 			},
 			onEachFeature: onEachFeature
