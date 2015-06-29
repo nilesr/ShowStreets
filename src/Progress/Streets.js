@@ -15,39 +15,45 @@ Progress.streets = (function Streets($, L) {
 
     function onEachFeature(feature, layer) {
       // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.type) {
-          // http://gis.stackexchange.com/questions/31951/how-to-show-a-popup-on-mouse-over-not-on-click
-            layer.bindPopup(feature.properties.type);
-            // layer.on('mouseover', function (e) {
-            //   this.openPopup();
-            // });
-            // layer.on('mouseout', function (e) {
-            //   this.closePopup();
-            // });
+      if (feature.properties && feature.properties.type) {
+        // http://gis.stackexchange.com/questions/31951/how-to-show-a-popup-on-mouse-over-not-on-click
+        console.log("<a href=\"/audit/".concat(feature.properties.type,"/",feature.id,"\">Audit</a>"));
+        try {
+          layer.bindPopup("<a href=\"/audit/".concat(feature.properties.type,"/",feature.id,"\">Audit</a>"));
         }
+        catch(e) {
+          layer.bindPopup("Failed")
+        }
+        // layer.on('mouseover', function (e) {
+        //   this.openPopup();
+        // });
+        // layer.on('mouseout', function (e) {
+        //   this.closePopup();
+        // });
+      }
     }
 
     // Show streets
     $.getJSON("resources/SmallMap_02_Streets.geojson", function(data) {
       L.geoJson(data, {
-        pointToLayer: L.mapbox.marker.style,
-        style: function(feature) {
-          // console.log(feature.properties.type);
-          var tempStyle = $.extend(true, {}, mystyle);
-          var randomInt = Math.floor(Math.random() * 5);
+      pointToLayer: L.mapbox.marker.style,
+      style: function(feature) {
+        console.log(feature.properties.type);
+        var tempStyle = $.extend(true, {}, mystyle);
+        var randomInt = Math.floor(Math.random() * 5);
 
-          tempStyle.color = Color.Pallet.sequential(randomInt);
-          tempStyle.opacity = 0.75;
-          tempStyle.weight = 3;
+        tempStyle.color = Color.Pallet.sequential(randomInt);
+        tempStyle.opacity = 0.75;
+        tempStyle.weight = 3;
 
-          return tempStyle;
-        },
-        onEachFeature: onEachFeature
+        return tempStyle;
+      },
+      onEachFeature: onEachFeature
       })
       .addTo(Progress.map);
     })
     .fail(function (result) {
-      console.log(result);
+      console.log("Failed on: ", result);
     });
 
     // Show sidewalks
@@ -59,7 +65,7 @@ Progress.streets = (function Streets($, L) {
           var tempStyle = $.extend(true, {}, mystyle);
           var randomInt = Math.floor(Math.random() * 5);
 
-          console.log(feature);
+          //console.log(feature);
           switch (feature.properties.type) {
             case "footway" :
               tempStyle.color = "#ccc";
@@ -81,7 +87,6 @@ Progress.streets = (function Streets($, L) {
       console.log(result);
     });
   }
-
   // Public methods
   self.init = _init;
 
