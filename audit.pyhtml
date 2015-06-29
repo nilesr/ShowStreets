@@ -1,0 +1,26 @@
+<%
+args = d["audit"].split("/")
+%>
+<!doctype html>
+<html>
+	<head>
+		<title>Audit</title>
+		<style>
+			body {
+				background-color: #dfd;
+				font-family: sans-serif;
+				text-align: center
+			}
+			.pre {
+				font-family: monospace;
+				background-color: lightgrey;
+				border-radius: 2px;
+				border: 1px solid darkgrey;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Way auditor</h1>
+		You are auditing way of type <span class="pre">${args[0]}</span> with id <span class="pre">${args[2]}</span>
+	</body>
+</html>
