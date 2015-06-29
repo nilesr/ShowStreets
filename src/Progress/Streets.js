@@ -24,7 +24,8 @@ Progress.streets = (function Streets($, L) {
 						} else {
 						  var plural = "people have";
 						}
-						layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id, feature.geometry /* <-- FIXME */ ,"\">Audit</a>")); 
+						console.log(feature.geometry)
+						layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id,"\">Audit</a>")); 
 					});
 				}
 				catch(e) {
