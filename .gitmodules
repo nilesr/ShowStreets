@@ -1,0 +1,3 @@
+[submodule "mako-server"]
+	path = mako-server
+	url = git@github.com:nilesr/mako-server
