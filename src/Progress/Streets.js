@@ -35,6 +35,8 @@ Progress.streets = (function Streets($, L) {
 				$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
 					tempStyle.color = Color.Pallet.sequential(parseInt(data));
 				});
+				// This will replace the above code after it has been implimented server-side
+				//tempStyle.color = feature.properties.stroke
 				tempStyle.opacity = 0.75;
 				tempStyle.weight = 3;
 				return tempStyle;
