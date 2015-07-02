@@ -15,29 +15,13 @@ Progress.streets = (function Streets($, L) {
 
 		function onEachFeature(feature, layer) {
 			// does this feature have a property named popupContent?
-			if (feature.properties && feature.properties.type) {
-				// http://gis.stackexchange.com/questions/31951/how-to-show-a-popup-on-mouse-over-not-on-click
-				try {
-					num = $.get("/audit_stats/total_audits/".concat(feature.id), function(data) { 
-						if (data.trim() == "1") {
-						  var plural = "person has";
-						} else {
-						  var plural = "people have";
-						}
-						layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id,"\">Audit</a>")); 
-						//if (feature.properties.type == "")
-					});
-				}
-				catch(e) {
-					layer.bindPopup(e.message);
-				}
-				// layer.on('mouseover', function (e) {
-				//	 this.openPopup();
-				// });
-				// layer.on('mouseout', function (e) {
-				//	 this.closePopup();
-				// });
-			}
+			
+			$(layer).click(function(evt) {
+				// Load should be defined in the header of index.html
+				load(feature.properties.id);
+			});
+			//layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id,"\">Audit</a>")); 
+			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\">Loading...</div>"));
 		}
 
 		// Show streets
@@ -47,13 +31,12 @@ Progress.streets = (function Streets($, L) {
 			style: function(feature) {
 				//console.log(feature.properties.type);
 				var tempStyle = $.extend(true, {}, mystyle);
-				$.ajaxSetup({async: false}); // This is bad, but there is no other way to do it because it has to be returned from this function and cannot be re-set later.
+				$.ajaxSetup({async: false}); // This is bad, and will be replaced when the color just ships straight from the json.
 				$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
 					tempStyle.color = Color.Pallet.sequential(parseInt(data));
 				});
 				tempStyle.opacity = 0.75;
 				tempStyle.weight = 3;
-				console.log(tempStyle.color)
 				return tempStyle;
 			},
 			onEachFeature: onEachFeature
