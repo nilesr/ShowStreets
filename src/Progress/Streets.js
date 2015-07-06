@@ -14,34 +14,30 @@ Progress.streets = (function Streets($, L) {
 		};
 
 		function onEachFeature(feature, layer) {
-			// does this feature have a property named popupContent?
-			
-			$(layer).click(function(evt) {
-				// Load should be defined in the header of index.html
+			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\">Loading...</div>"));
+			$(layer).click(function() {
 				load(feature.properties.id);
 			});
-			//layer.bindPopup(data.concat(" ", plural, " audited this. ","<a href=\"/audit/",feature.properties.type,"/",feature.id,"\">Audit</a>")); 
-			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\">Loading...</div>"));
 		}
 
 		// Show streets
 		$.getJSON("resources/SmallMap_02_Streets.geojson", function(data) {
 			L.geoJson(data, {
-			pointToLayer: L.mapbox.marker.style,
-			style: function(feature) {
-				//console.log(feature.properties.type);
-				var tempStyle = $.extend(true, {}, mystyle);
-				$.ajaxSetup({async: false}); // This is bad, and will be replaced when the color just ships straight from the json.
-				$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
-					tempStyle.color = Color.Pallet.sequential(parseInt(data));
-				});
-				// This will replace the above code after it has been implimented server-side
-				//tempStyle.color = feature.properties.stroke
-				tempStyle.opacity = 0.75;
-				tempStyle.weight = 3;
-				return tempStyle;
-			},
-			onEachFeature: onEachFeature
+				pointToLayer: L.mapbox.marker.style,
+				style: function(feature) {
+					//console.log(feature.properties.type);
+					var tempStyle = $.extend(true, {}, mystyle);
+					$.ajaxSetup({async: false}); // This is bad, and will be replaced when the color just ships straight from the json.
+					$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
+						tempStyle.color = Color.Pallet.sequential(parseInt(data));
+					});
+					// This will replace the above code after it has been implimented server-side
+					//tempStyle.color = feature.properties.stroke
+					tempStyle.opacity = 0.75;
+					tempStyle.weight = 3;
+					return tempStyle;
+				},
+				onEachFeature: onEachFeature
 			})
 			.addTo(Progress.map);
 		})

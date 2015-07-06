@@ -9,13 +9,14 @@
 		<script src="src/color/ColorPallet.js"></script>
 		<script>
 			var load = function(id) {
+				str = "#feature-".concat(id.toString());
 				$.get("/audit_stats/total_audits/".concat(id), function(data) { 
 					if (data.trim() == "1") {
 					  var plural = "person has";
 					} else {
 					  var plural = "people have";
 					}
-					self.InnerHTML = data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">")
+					$(str).html(data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">Audit</a>"));
 				});
 			};
 		</script>
