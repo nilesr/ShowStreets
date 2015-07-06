@@ -14,7 +14,7 @@ Progress.streets = (function Streets($, L) {
 		};
 
 		function onEachFeature(feature, layer) {
-			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\">Loading...</div>"));
+			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\" class=\"FeaturePopup\">Loading...</div>"));
 			$(layer).click(function() {
 				load(feature.properties.id);
 			});
