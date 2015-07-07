@@ -1,0 +1,44 @@
+/* This is from http://purecss.io/combo/1.18.13?/css/layouts/marketing.css */
+/* Slightly modified */
+body {
+	line-height: 1.7em;
+	font-size: 16px;
+}
+.home-menu {
+    padding: 0.5em;
+    text-align: left;
+    box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
+    background: #2d3e50;
+}
+.home-menu ul {
+	float: right;
+}
+* {
+	box-sizing: border-box;
+}
+.pure-menu.pure-menu-fixed {
+    /* Fixed menus normally have a border at the bottom. */
+    border-bottom: none;
+    /* I need a higher z-index here because of the scroll-over effect. */
+    z-index: 4;
+}
+
+.home-menu .pure-menu-heading {
+    color: white;
+    font-weight: 400;
+    font-size: 120%;
+}
+
+.home-menu .pure-menu-selected a {
+    color: white;
+}
+
+.home-menu a {
+    color: #6FBEF3;
+}
+.home-menu li a:hover,
+.home-menu li a:focus {
+    background: none;
+    border: none;
+    color: #AECFE5;
+}

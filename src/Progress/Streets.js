@@ -19,20 +19,55 @@ Progress.streets = (function Streets($, L) {
 				load(feature.properties.id);
 			});
 		}
+		var polygon = {
+			"type": "FeatureCollection",
+			"features": [
+				{
+					"type": "Feature",
+					"properties": {},
+					"geometry": {
+						"type": "Polygon",
+						"coordinates": [
+							[
+								[
+									-75,
+									36
+								],
+								[
+									-75,
+									40
+								],
+								[
+									-78,
+									40
+								],
+								[
+									-78,
+									36
+								],
+								[
+									-75,
+									36
+								]
+							]
+						]
+					}
+				}
+			]
+		}	
+		L.geoJson(polygon, {
+			style: function(feature) {
+				return {fillColor: "#ffffff", "fillOpacity": 0.5};
+			}
+		}).addTo(Progress.map);
 
 		// Show streets
-		$.getJSON("resources/SmallMap_02_Streets.geojson", function(data) {
+		$.getJSON("json.pyhtml?file=SmallMap_02_Streets.geojson", function(data) {
 			L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
-					//console.log(feature.properties.type);
 					var tempStyle = $.extend(true, {}, mystyle);
-					$.ajaxSetup({async: false}); // This is bad, and will be replaced when the color just ships straight from the json.
-					$.get("/audit_stats/total_audits/".concat(feature.id), function(data) {
-						tempStyle.color = Color.Pallet.sequential(parseInt(data));
-					});
-					// This will replace the above code after it has been implimented server-side
-					//tempStyle.color = feature.properties.stroke
+					tempStyle.color = feature.properties.stroke
 					tempStyle.opacity = 0.75;
 					tempStyle.weight = 3;
 					return tempStyle;
@@ -46,7 +81,7 @@ Progress.streets = (function Streets($, L) {
 		});
 
 		// Show sidewalks
-		$.getJSON("resources/SmallMap_02_Sidewalks.geojson", function(data) {
+		$.getJSON("json.pyhtml?file=SmallMap_02_Sidewalks.geojson", function(data) {
 			L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
@@ -56,7 +91,7 @@ Progress.streets = (function Streets($, L) {
 
 					//console.log(feature);
 					switch (feature.properties.type) {
-						case "footway" :
+						case "footway":
 							tempStyle.color = "#888";
 							tempStyle.dashArray = "3, 2"
 							break;
