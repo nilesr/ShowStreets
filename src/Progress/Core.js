@@ -26,7 +26,7 @@ Progress.core = (function Map($, L) {
       id: 'examples.map-20v6611k'
     });
     tileLayer.addTo(Progress.map);
-	//L.imageOverlay("test.png", [[36, -75], [40, -78]]).addTo(Progress.map);
+	var lcontrol = L.control.layers([tileLayer], [])
 
 
     // Initialize other modules

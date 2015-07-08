@@ -60,10 +60,26 @@ Progress.streets = (function Streets($, L) {
 				return {fillColor: "#ffffff", "fillOpacity": 0.5};
 			}
 		}).addTo(Progress.map);
+		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
+		var sidewalkmap = "test";
+		var streetmap = "test";
+		var zipcodemap = "test";
 
-		// Show streets
+		$.getJSON("json.pyhtml?file=new.geojson", function(data) {
+			zipcodemap = L.geoJson(data, {
+				pointToLayer: L.mapbox.marker.style,
+				style: function(feature) {
+					return {fillColor: feature.properties.stroke, "fillOpacity": 0.5, weight: 0};
+				},
+				onEachFeature: onEachFeature
+			});
+			streetmap.addTo(Progress.map);
+		})
+		.fail(function (result) {
+			console.log("Failed on: ", result);
+		});
 		$.getJSON("json.pyhtml?file=SmallMap_02_Streets.geojson", function(data) {
-			L.geoJson(data, {
+			streetmap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
 					var tempStyle = $.extend(true, {}, mystyle);
@@ -73,8 +89,8 @@ Progress.streets = (function Streets($, L) {
 					return tempStyle;
 				},
 				onEachFeature: onEachFeature
-			})
-			.addTo(Progress.map);
+			});
+			streetmap.addTo(Progress.map);
 		})
 		.fail(function (result) {
 			console.log("Failed on: ", result);
@@ -82,7 +98,7 @@ Progress.streets = (function Streets($, L) {
 
 		// Show sidewalks
 		$.getJSON("json.pyhtml?file=SmallMap_02_Sidewalks.geojson", function(data) {
-			L.geoJson(data, {
+			sidewalkmap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
 					// console.log(feature.properties.type);
@@ -104,11 +120,34 @@ Progress.streets = (function Streets($, L) {
 					return tempStyle;
 				},
 				onEachFeature: onEachFeature
-			})
-			.addTo(Progress.map);
+			});
+			sidewalkmap.addTo(Progress.map);
 		})
 		.fail(function (result) {
 			console.log(result);
+		});
+		Progress.map.on('zoomend', function() {
+			if (Progress.map.getZoom() < 14) {
+				if (Progress.map.hasLayer(sidewalkmap)) {
+					Progress.map.removeLayer(sidewalkmap);
+				}
+				if (Progress.map.hasLayer(streetmap)) {
+					Progress.map.removeLayer(streetmap);
+				}
+				if (!Progress.map.hasLayer(zipcodemap)) {
+					Progress.map.addLayer(zipcodemap);
+				}
+			} else {
+				if (!Progress.map.hasLayer(sidewalkmap)) {
+					Progress.map.addLayer(sidewalkmap);
+				}
+				if (!Progress.map.hasLayer(streetmap)) {
+					Progress.map.addLayer(streetmap);
+				}
+				if (Progress.map.hasLayer(zipcodemap)) {
+					Progress.map.removeLayer(zipcodemap);
+				}
+			}
 		});
 	}
 	// Public methods

@@ -11,7 +11,7 @@ colors = [
 ]
 data = json.load(open("/home/niles/ShowStreets/resources/" + d["file"]))
 for street in data["features"]:
-	if street["properties"]["type"] == "sidewalk": continue
+	#if street["properties"]["type"] == "sidewalk": continue
 	street["properties"]["stroke"] = colors[random.randint(0, len(colors)-1)]
 %>
 ${json.dumps(data)}
