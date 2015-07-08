@@ -21,6 +21,6 @@ args = d["audit"].split("/")
 	</head>
 	<body>
 		<h1>Way auditor</h1>
-		You are auditing way of type <span class="pre">${args[0]}</span> with id <span class="pre">${args[2]}</span>
+		You are auditing way with id <span class="pre">${args[0]}</span>
 	</body>
 </html>

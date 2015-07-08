@@ -2,16 +2,17 @@
 	import json, random
 %>
 <%
-colors = [
-	  "#FEF0D9"
-	, "#FDCC8A"
-	, "#FC8D59"
-	, "#E34A33"
-	, "#B30000"
-]
+def color(percent):
+	red = 255 - (255*percent/100)
+	green = (255*percent/100)
+	red = str(hex(red))[2:]
+	green = str(hex(green))[2:]
+	if len(red) == 1: red = "0" + red
+	if len(green) == 1: green = "0" + green
+	return "#" + red + green + "00"
 data = json.load(open("/home/niles/ShowStreets/resources/" + d["file"]))
 for street in data["features"]:
 	#if street["properties"]["type"] == "sidewalk": continue
-	street["properties"]["stroke"] = colors[random.randint(0, len(colors)-1)]
+	street["properties"]["stroke"] = color(random.randint(0, 100))
 %>
 ${json.dumps(data)}
