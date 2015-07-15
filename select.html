@@ -26,6 +26,7 @@
 			#map { position:absolute; top:0; bottom:0; width:100%; }
 			.FeaturePopup { width: 500px; }
 			#zipRadio { position: absolute; top: 5%; right: 5%; background: #eeeeee; border-radius: 6px; }
+			#loading { position: absolute; bottom: 5%; right: 5%; font-family: sans-serif; }
 		</style>
 	</head>
 	<body>
@@ -38,9 +39,11 @@
 		</div>
 		<div id="loading">
 			<div id="loading_zip">
+				<img src="/resources/ajax-loader.gif" />
 				Loading zip code map... Please wait.
 			</div>
 			<div id="loading_neighborhood">
+				<img src="/resources/ajax-loader.gif" />
 				Loading neighborhood map... Please wait.
 			</div>
 		</div>

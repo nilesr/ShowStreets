@@ -30,31 +30,31 @@ Progress.streets = (function Streets($, L) {
 						"coordinates": [
 							[
 								[
-									-75,
-									36
+									180,
+									-180
 								],
 								[
-									-75,
-									40
+									180,
+									180
 								],
 								[
-									-78,
-									40
+									-180,
+									180
 								],
 								[
-									-78,
-									36
+									-180,
+									-180
 								],
 								[
-									-75,
-									36
+									180,
+									-180
 								]
 							]
 						]
 					}
 				}
 			]
-		}	
+		}
 		L.geoJson(polygon, {
 			style: function(feature) {
 				return {fillColor: "#ffffff", "fillOpacity": 0.5};
@@ -76,6 +76,7 @@ Progress.streets = (function Streets($, L) {
 				onEachFeature: onEachFeature
 			});
 			streetmap.addTo(Progress.map);
+			$("#loading_neighborhood").html("");
 		})
 		.fail(function (result) {
 			console.log("Failed on: ", result);
@@ -89,6 +90,7 @@ Progress.streets = (function Streets($, L) {
 				onEachFeature: onEachFeature
 			});
 			streetmap.addTo(Progress.map);
+			$("#loading_zip").html("");
 		})
 		.fail(function (result) {
 			console.log("Failed on: ", result);
