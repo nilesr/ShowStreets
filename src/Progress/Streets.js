@@ -64,8 +64,23 @@ Progress.streets = (function Streets($, L) {
 		var sidewalkmap = "test";
 		var streetmap = "test";
 		var zipcodemap = "test";
+		var neighborhoodmap = "test";
+		var zip = false;
 
-		$.getJSON("json.pyhtml?file=new.geojson", function(data) {
+		$.getJSON("json.pyhtml?file=new4.geojson", function(data) {
+			neighborhoodmap = L.geoJson(data, {
+				pointToLayer: L.mapbox.marker.style,
+				style: function(feature) {
+					return {fillColor: feature.properties.stroke, "fillOpacity": 0.5, weight: 0};
+				},
+				onEachFeature: onEachFeature
+			});
+			streetmap.addTo(Progress.map);
+		})
+		.fail(function (result) {
+			console.log("Failed on: ", result);
+		});
+		$.getJSON("json.pyhtml?file=new3.geojson", function(data) {
 			zipcodemap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
@@ -126,16 +141,29 @@ Progress.streets = (function Streets($, L) {
 		.fail(function (result) {
 			console.log(result);
 		});
-		Progress.map.on('zoomend', function() {
-			if (Progress.map.getZoom() < 14) {
+		var updateLayers = function() {
+			zip = document.getElementById("zip_zip").checked;
+			if (Progress.map.getZoom() < 16) {
 				if (Progress.map.hasLayer(sidewalkmap)) {
 					Progress.map.removeLayer(sidewalkmap);
 				}
 				if (Progress.map.hasLayer(streetmap)) {
 					Progress.map.removeLayer(streetmap);
 				}
-				if (!Progress.map.hasLayer(zipcodemap)) {
-					Progress.map.addLayer(zipcodemap);
+				if (zip) {
+					if (!Progress.map.hasLayer(zipcodemap)) {
+						Progress.map.addLayer(zipcodemap);
+					}
+					if (Progress.map.hasLayer(neighborhoodmap)) {
+						Progress.map.removeLayer(neighborhoodmap);
+					}
+				} else {
+					if (!Progress.map.hasLayer(neighborhoodmap)) {
+						Progress.map.addLayer(neighborhoodmap);
+					}
+					if (Progress.map.hasLayer(zipcodemap)) {
+						Progress.map.removeLayer(zipcodemap);
+					}
 				}
 			} else {
 				if (!Progress.map.hasLayer(sidewalkmap)) {
@@ -147,7 +175,16 @@ Progress.streets = (function Streets($, L) {
 				if (Progress.map.hasLayer(zipcodemap)) {
 					Progress.map.removeLayer(zipcodemap);
 				}
+				if (Progress.map.hasLayer(neighborhoodmap)) {
+					Progress.map.removeLayer(neighborhoodmap);
+				}
 			}
+		}
+		$("#zipRadio").click(function(){
+			updateLayers();
+		});
+		Progress.map.on('zoomend', function() {
+			updateLayers();
 		});
 	}
 	// Public methods

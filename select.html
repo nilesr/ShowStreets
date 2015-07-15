@@ -25,15 +25,30 @@
 			body { margin:0; padding:0; }
 			#map { position:absolute; top:0; bottom:0; width:100%; }
 			.FeaturePopup { width: 500px; }
+			#zipRadio { position: absolute; top: 5%; right: 5%; background: #eeeeee; border-radius: 6px; }
 		</style>
 	</head>
 	<body>
 		<div id='map'></div>
+		<div id="zipRadio">
+			<form>
+				<input type="radio" name="group" id="zip_zip" checked />Zip code<br />
+				<input type="radio" name="group" id="zip_neighborhood" />Neighborhood
+			</form>
+		</div>
+		<div id="loading">
+			<div id="loading_zip">
+				Loading zip code map... Please wait.
+			</div>
+			<div id="loading_neighborhood">
+				Loading neighborhood map... Please wait.
+			</div>
+		</div>
 		<script src="src/Progress/Core.js"></script>
 		<script src="src/Progress/Streets.js"></script>
 		<script>
 			$(document).ready(function () {
-			  Progress.core.init();
+				Progress.core.init();
 			});
 		</script>
 	</body>

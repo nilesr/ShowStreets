@@ -9,7 +9,22 @@ def color(percent):
 	green = str(hex(green))[2:]
 	if len(red) == 1: red = "0" + red
 	if len(green) == 1: green = "0" + green
+	# "00" for green -> red
+	# green for red -> blue
+	# "aa" or "ff" for magenta -> blue/bluegreen
 	return "#" + red + green + "00"
+
+def color(percent, blue="00"):
+	if percent > 50:
+		red = ((percent-50)*255)/100
+	else:
+		red = 0
+	green = (200*percent/100) + 55
+	red = str(hex(red))[2:]
+	green = str(hex(green))[2:]
+	if len(red) == 1: red = "0" + red
+	if len(green) == 1: green = "0" + green
+	return "#" + red + green + red
 data = json.load(open("/home/niles/ShowStreets/resources/" + d["file"]))
 for street in data["features"]:
 	#if street["properties"]["type"] == "sidewalk": continue
