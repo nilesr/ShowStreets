@@ -8,16 +8,22 @@
 		<script src='lib/mapbox.js'></script>
 		<script src="src/color/ColorPallet.js"></script>
 		<script>
-			var load = function(id) {
+			var load = function(id, type, ziptype) {
 				str = "#feature-".concat(id.toString());
-				$.get("/audit_stats/total_audits/".concat(id), function(data) { 
-					if (data.trim() == "1") {
-					  var plural = "person has";
-					} else {
-					  var plural = "people have";
-					}
-					$(str).html(data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">Audit</a>"));
-				});
+				if (type === "MultiPolygon" || type === "Polygon") {
+					$.get("/audit_stats/area_percent/".concat(ziptype,"/",id), function(data) { 
+						$(str).html(data.trim().concat("% audited."));
+					});
+				} else {
+					$.get("/audit_stats/total_audits/".concat(id), function(data) { 
+						if (data.trim() == "1") {
+						  var plural = "person has";
+						} else {
+						  var plural = "people have";
+						}
+						$(str).html(data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">Audit</a>"));
+					});
+				}
 			};
 		</script>
 		<link href='css/mapbox.css' rel='stylesheet' />
@@ -33,8 +39,8 @@
 		<div id='map'></div>
 		<div id="zipRadio">
 			<form>
-				<input type="radio" name="group" id="zip_zip" checked />Zip code<br />
-				<input type="radio" name="group" id="zip_neighborhood" />Neighborhood
+				<input type="radio" name="group" id="zip_zip" disabled />Zip code<br />
+				<input type="radio" name="group" id="zip_neighborhood" disabled />Neighborhood
 			</form>
 		</div>
 		<div id="loading">
@@ -52,6 +58,21 @@
 		<script>
 			$(document).ready(function () {
 				Progress.core.init();
+				//alert(localStorage.getItem("zip"));
+				//alert(localStorage.getItem("zip") === "false");
+				if (localStorage.getItem("zip") === "true") {
+					$("#zip_zip").prop("checked", true);
+					$("#zip_neighborhood").prop("checked", false);
+				} else if (localStorage.getItem("zip") === "false") {
+					//alert(localStorage.getItem("zip"));
+					$("#zip_zip").prop("checked", false);
+					$("#zip_neighborhood").prop("checked", true);
+				} else if (localStorage.getItem("zip") === null) {
+					$("#zip_zip").prop("checked", true);
+					localStorage.setItem("zip", true);
+				} else { alert("error"); }
+				$("#zip_zip").prop("disabled", false);
+				$("#zip_neighborhood").prop("disabled", false);
 			});
 		</script>
 	</body>

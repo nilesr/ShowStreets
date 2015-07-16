@@ -1,1 +1,8 @@
-<% import random %>${random.randint(0, 4)}
+<%
+	import random
+	args = d["audit_stats"].split("/")
+	if args[0] == "total_audits":
+		f = random.randint(0, 4)
+	else:
+		f = random.randint(0, 100)
+%>${f}

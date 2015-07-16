@@ -13,11 +13,21 @@ Progress.streets = (function Streets($, L) {
 			opacity: 0.75
 		};
 
-		function onEachFeature(feature, layer) {
+		function onEachFeature(feature, layer, ziptype) {
 			layer.bindPopup("<div id=\"feature-".concat(feature.properties.id, "\" class=\"FeaturePopup\">Loading...</div>"));
 			$(layer).click(function() {
-				load(feature.properties.id);
+				load(feature.properties.id, feature.geometry.type, ziptype);
 			});
+		}
+		function onEachFeatureNeighborhood(feature, layer) {
+			onEachFeature(feature, layer, "neighborhood");
+		}
+		function onEachFeatureZip(feature, layer) {
+			//feature.properties.id = feature.properties.NAME;
+			onEachFeature(feature, layer, "zip");
+		}
+		function onEachFeatureWrapper(feature, layer) {
+			onEachFeature(feature, layer, null);
 		}
 		var polygon = {
 			"type": "FeatureCollection",
@@ -73,7 +83,7 @@ Progress.streets = (function Streets($, L) {
 				style: function(feature) {
 					return {fillColor: feature.properties.stroke, "fillOpacity": 0.5, weight: 0};
 				},
-				onEachFeature: onEachFeature
+				onEachFeature: onEachFeatureNeighborhood
 			});
 			streetmap.addTo(Progress.map);
 			$("#loading_neighborhood").html("");
@@ -87,7 +97,7 @@ Progress.streets = (function Streets($, L) {
 				style: function(feature) {
 					return {fillColor: feature.properties.stroke, "fillOpacity": 0.5, weight: 0};
 				},
-				onEachFeature: onEachFeature
+				onEachFeature: onEachFeatureZip
 			});
 			streetmap.addTo(Progress.map);
 			$("#loading_zip").html("");
@@ -105,7 +115,7 @@ Progress.streets = (function Streets($, L) {
 					tempStyle.weight = 3;
 					return tempStyle;
 				},
-				onEachFeature: onEachFeature
+				onEachFeature: onEachFeatureWrapper
 			});
 			streetmap.addTo(Progress.map);
 		})
@@ -136,7 +146,7 @@ Progress.streets = (function Streets($, L) {
 
 					return tempStyle;
 				},
-				onEachFeature: onEachFeature
+				onEachFeature: onEachFeatureWrapper
 			});
 			sidewalkmap.addTo(Progress.map);
 		})
@@ -145,7 +155,8 @@ Progress.streets = (function Streets($, L) {
 		});
 		var updateLayers = function() {
 			zip = document.getElementById("zip_zip").checked;
-			if (Progress.map.getZoom() < 16) {
+			localStorage.setItem("zip", zip)
+			if (Progress.map.getZoom() < 14) { // Used to be 16. 
 				if (Progress.map.hasLayer(sidewalkmap)) {
 					Progress.map.removeLayer(sidewalkmap);
 				}
