@@ -1,8 +1,35 @@
 <%
+	f = False
 	import random
 	args = d["audit_stats"].split("/")
 	if args[0] == "total_audits":
 		f = random.randint(0, 4)
+	if args[0] == "graph":
+		import json, datetime
+		if args[1] == "activity":
+			data = []
+			today = datetime.date.today()
+			for i in range(50):
+				data.append({"x": (today - datetime.timedelta(i)).strftime("%x"), "y": random.randint(0, 20)})
+			data = data[::-1]
+			f = json.dumps(data)
+		elif args[1] == "my_activity":
+			data = []
+			today = datetime.date.today()
+			for i in range(6):
+				data.append({"x": (today - datetime.timedelta(i)).strftime("%x"), "y": random.randint(0, 10)})
+			data = data[::-1]
+			f = json.dumps(data)
+		elif args[1] == "my_labels":
+			data = [
+				{"x": "Curb ramps", "y": random.randint(0, 20)},
+				{"x": "Missing curb ramps", "y": random.randint(0, 20)},
+				{"x": "Obstacles in path", "y": random.randint(0, 20)},
+				{"x": "Surface problems", "y": random.randint(0, 20)}
+			]
+			f = json.dumps(data)
+		else:
+			f = "error"
 	else:
 		f = random.randint(0, 100)
 %>${f}

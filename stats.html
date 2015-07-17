@@ -1,8 +1,138 @@
 <!doctype html>
 <html>
 	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		<script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js" charset="utf-8"></script>
+		<link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css" />
+		<script src="lib/jquery-1.7.2.min.js"></script>
+		<style>
+			@font-face {
+				font-family: HelveticaNeueUltraLight;
+				src: url("resources/HelveticaNeue-UltraLight.otf") format("opentype");
+			}
+			body {
+				font-family: HelveticaNeueUltraLight, sans-serif;
+				letter-spacing: 1px;
+			}
+			h2 {
+				font-weight: bold;
+				margin: 0px;
+			}
+			.block {
+				display: inline-block;
+				width: 50%;
+			}
+			#distance_chart.tick:not(.zero) {
+				opacity: 0 !important;
+			}
+		</style>
+		<script>
+			$.getJSON("/audit_stats/graph/activity", function(activity_data) {
+				activity_datum = [
+					{
+						key: "test",
+						values: activity_data,
+						color: "#0000ff"
+					}
+				];
+				nv.addGraph(function() {
+					var chart = nv.models.discreteBarChart();
+					chart.tooltip.enabled(true);
+					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+						return key.data.x + " - " + key.data.y + " audits";
+					})
+					chart.showXAxis(false);
+					chart.color(["#E58755"]);
+					chart.yAxis
+						//.axisLabel("Audits per day")
+						.tickFormat(d3.format(',.0f')); // Do not show decimal points
+					d3.select("#activity_chart svg")
+						.datum(activity_datum)
+						.transition().duration(500).call(chart);
+					nv.utils.windowResize(
+						function() {
+							chart.update();
+						}
+					);
+				});
+			});
+			$.getJSON("/audit_stats/graph/my_activity", function(my_activity_data) {
+				my_activity_datum = [
+					{
+						key: "test",
+						values: my_activity_data,
+						color: "#0000ff"
+					}
+				];
+				nv.addGraph(function() {
+					var chart = nv.models.discreteBarChart();
+					chart.tooltip.enabled(true);
+					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+						return key.data.x + " - " + key.data.y + " miles";
+					})
+					chart.showXAxis(false);
+					//chart.showYAxis(false);
+					chart.margin({top: 15, right: 0, bottom: 50, left: 0})
+					chart.color(["#FAA757"]);
+					chart.yAxis
+						.tickFormat(d3.format(',.0f')); // Do not show decimal points
+					d3.select("#distance_chart svg")
+						.datum(my_activity_datum)
+						.transition().duration(500).call(chart);
+					nv.utils.windowResize(
+						function() {
+							chart.update();
+						}
+					);
+				});
+			});
+			$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
+				my_labels_datum = [
+					{
+						key: "test",
+						values: my_labels_data,
+						color: "#ff00ff"
+					}
+				];
+				nv.addGraph(function() {
+					var chart = nv.models.multiBarHorizontalChart();
+					chart.tooltip.enabled(true);
+					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+						return key.data.x + " - " + key.data.y + " miles";
+					})
+					//chart.showXAxis(false);
+					//chart.showYAxis(false);
+					chart.showControls(false);
+					chart.showLegend(false);
+					chart.margin({top: 15, right: 0, bottom: 50, left: 0})
+					chart.yAxis
+						.tickFormat(d3.format(',.0f')); // Do not show decimal points
+					d3.select("#labels_chart svg")
+						.datum(my_labels_datum)
+						.transition().duration(500).call(chart);
+					nv.utils.windowResize(
+						function() {
+							chart.update();
+						}
+					);
+				});
+			});
+		</script>
 	</head>
 	<body>
-		<h1></h1>
+		<div style="width: 90%; margin-left: 5%;">
+			<h1>Activities</h1>
+			<div id="activity_chart">
+				<svg style="height:20%; width: 95%;" />
+			</div>
+			<h2>Your weekly activity</h2>
+			<span class="block" id="distance_chart">
+				<h3>Distance audited</h3>
+				<svg style="height:30%; width: 95%;" />
+			</span><!-- NO WHITESPACE --><span class="block" id="labels_chart">
+				<h3>Number of labels</h3>
+				<svg style="height:30%; width: 95%;" />
+			</span>
+		</div>
 	</body>
 </html>
