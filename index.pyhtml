@@ -9,6 +9,9 @@
 			var resizeWrapper = function() {
 				$("#wrapper").css("height", "100%").css("height", "-=".concat($("#header").css("height"), "px"));
 			};
+			var load = function(location) {
+				document.getElementById("iframe").src = location;
+			}
 		</script>
 	</head>
 	<body onLoad="resizeWrapper();" >
@@ -17,14 +20,15 @@
 				<a href="#" class="pure-menu-heading">Placeholder Title</a>
 				<ul class="pure-menu-list">
 					<li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
-					<li class="pure-menu-item"><a href="/about.pyhtml" class="pure-menu-link">About Us</a></li>
-					<li class="pure-menu-item"><a href="/select.html" class="pure-menu-link">Audit</a></li>
+					<li class="pure-menu-item"><a href="#" onclick="load('/select.html')" class="pure-menu-link">Audit</a></li>
+					<li class="pure-menu-item"><a href="#" onclick="load('/stats.html')" class="pure-menu-link">Stats</a></li>
+					<li class="pure-menu-item"><a href="#" onclick="load('/about.html')" class="pure-menu-link">About Us</a></li>
 				</ul>
 			</div>
 		</div>
 		<div style="height: 100%; width: 100%;position: absolute;" id="wrapper">
 			<!-- The "seamless" tag is apparently not accepted in any modern browser, despite being introduced in the HTML5 standard. This makes the extra CSS nessescary -->
-			<iframe src="/select.html" seamless style="border: none; width: 100%; height: 100%; display:block;" scrolling=no>
+			<iframe src="/select.html" seamless style="border: none; width: 100%; height: 100%; display:block;" scrolling=no id="iframe">
 				Sorry, your browser does not allow or does not support iframes. Please click the "Audit" button in the top right to continue.
 			</iframe>
 		</div>
