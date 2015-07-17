@@ -5,6 +5,7 @@
 		<script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js" charset="utf-8"></script>
 		<link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css" />
 		<script src="lib/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<style>
 			@font-face {
 				font-family: HelveticaNeueUltraLight;
@@ -13,6 +14,9 @@
 			body {
 				font-family: HelveticaNeueUltraLight, sans-serif;
 				letter-spacing: 1px;
+			}
+			svg {
+				letter-spacing: 0px;
 			}
 			h2 {
 				font-weight: bold;
@@ -39,12 +43,17 @@
 					var chart = nv.models.discreteBarChart();
 					chart.tooltip.enabled(true);
 					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
-						return key.data.x + " - " + key.data.y + " audits";
+						if (key.data.y == 1) {
+							var plural = "audit";
+						} else {
+							var plural = "audits";
+						}
+						return key.data.x + " - " + key.data.y + " " + plural;
 					})
 					chart.showXAxis(false);
 					chart.color(["#E58755"]);
 					chart.yAxis
-						//.axisLabel("Audits per day")
+						.axisLabel("Audits")
 						.tickFormat(d3.format(',.0f')); // Do not show decimal points
 					d3.select("#activity_chart svg")
 						.datum(activity_datum)
@@ -68,14 +77,20 @@
 					var chart = nv.models.discreteBarChart();
 					chart.tooltip.enabled(true);
 					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
-						return key.data.x + " - " + key.data.y + " miles";
+						if (key.data.y == 1) {
+							var plural = "mile";
+						} else {
+							var plural = "miles";
+						}
+						return key.data.x + " - " + key.data.y + " " + plural;
 					})
-					chart.showXAxis(false);
+					//chart.showXAxis(false);
 					//chart.showYAxis(false);
-					chart.margin({top: 15, right: 0, bottom: 50, left: 0})
+					chart.margin({top: 15, right: 15, bottom: 50, left: 100})
 					chart.color(["#FAA757"]);
 					chart.yAxis
-						.tickFormat(d3.format(',.0f')); // Do not show decimal points
+						.axisLabel("Miles")
+						.tickFormat(d3.format(',.0f'));
 					d3.select("#distance_chart svg")
 						.datum(my_activity_datum)
 						.transition().duration(500).call(chart);
@@ -86,37 +101,26 @@
 					);
 				});
 			});
-			$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
-				my_labels_datum = [
-					{
-						key: "test",
-						values: my_labels_data,
-						color: "#ff00ff"
-					}
-				];
-				nv.addGraph(function() {
-					var chart = nv.models.multiBarHorizontalChart();
-					chart.tooltip.enabled(true);
-					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
-						return key.data.x + " - " + key.data.y + " miles";
-					})
-					//chart.showXAxis(false);
-					//chart.showYAxis(false);
-					chart.showControls(false);
-					chart.showLegend(false);
-					chart.margin({top: 15, right: 0, bottom: 50, left: 0})
-					chart.yAxis
-						.tickFormat(d3.format(',.0f')); // Do not show decimal points
-					d3.select("#labels_chart svg")
-						.datum(my_labels_datum)
-						.transition().duration(500).call(chart);
-					nv.utils.windowResize(
-						function() {
-							chart.update();
+			google.load('visualization', '1', {packages: ['corechart', 'bar']});
+			google.setOnLoadCallback(my_labels_graph);
+			function my_labels_graph() {
+				$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
+					var my_labels_datum = google.visualization.arrayToDataTable(my_labels_data);
+					var options = {
+						title: "",
+						chartArea: {width: "95%"},
+						hAxis: {
+							title: "Labeled",
+							minValue: 0
+						},
+						vAxis: {
+							title: "test2"
 						}
-					);
+					};
+					var chart = new google.visualization.BarChart(document.getElementById("chart_div"));
+					chart.draw(my_labels_datum, options);
 				});
-			});
+			}
 		</script>
 	</head>
 	<body>
@@ -128,10 +132,10 @@
 			<h2>Your weekly activity</h2>
 			<span class="block" id="distance_chart">
 				<h3>Distance audited</h3>
-				<svg style="height:30%; width: 95%;" />
+				<svg style="height:100%; width: 95%;" />
 			</span><!-- NO WHITESPACE --><span class="block" id="labels_chart">
 				<h3>Number of labels</h3>
-				<svg style="height:30%; width: 95%;" />
+				<div id="chart_div">
 			</span>
 		</div>
 	</body>

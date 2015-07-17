@@ -22,10 +22,11 @@
 			f = json.dumps(data)
 		elif args[1] == "my_labels":
 			data = [
-				{"x": "Curb ramps", "y": random.randint(0, 20)},
-				{"x": "Missing curb ramps", "y": random.randint(0, 20)},
-				{"x": "Obstacles in path", "y": random.randint(0, 20)},
-				{"x": "Surface problems", "y": random.randint(0, 20)}
+				["Label", "Number labeled", {"role": "style"}],
+				["Curb ramps", random.randint(0, 20), "#AAC46C"],
+				["Missing curb ramps", random.randint(0, 20), "#FF8080"],
+				["Obstacles in path", random.randint(0, 20), "#FF7C00"],
+				["Surface problems", random.randint(0, 20), "#8080ff"]
 			]
 			f = json.dumps(data)
 		else:
