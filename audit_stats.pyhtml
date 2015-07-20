@@ -1,5 +1,5 @@
 <%
-	f = False
+	f = "error"
 	import random
 	args = d["audit_stats"].split("/")
 	if args[0] == "total_audits":
@@ -29,8 +29,6 @@
 				["Surface problems", random.randint(0, 20), "#8080ff"]
 			]
 			f = json.dumps(data)
-		else:
-			f = "error"
 	else:
 		f = random.randint(0, 100)
 %>${f}

@@ -26,8 +26,14 @@
 				display: inline-block;
 				width: 50%;
 			}
-			#distance_chart.tick:not(.zero) {
+			#distance_chart.tick:not(.zero) { /* Go away >:( */
 				opacity: 0 !important;
+				display: none !important;
+				height: 0px !important;
+				width: 0px !important;
+				position: absolute !important;
+				left: -9999px !important;
+				top: -9999px !important;
 			}
 		</style>
 		<script>
@@ -108,7 +114,9 @@
 					var my_labels_datum = google.visualization.arrayToDataTable(my_labels_data);
 					var options = {
 						title: "",
-						chartArea: {width: "45%"},
+						chartArea: {
+							width: "45%" // This makes it not cover up the labels on the left.
+						},
 						hAxis: {
 							title: "Labeled",
 							minValue: 0
