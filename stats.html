@@ -26,90 +26,93 @@
 				display: inline-block;
 				width: 50%;
 			}
-			#distance_chart.tick:not(.zero) { /* Go away >:( */
+			.zero { /* Go away >:( */
 				opacity: 0 !important;
 				display: none !important;
+				visibility: hidden !important;
 				height: 0px !important;
 				width: 0px !important;
 				position: absolute !important;
 				left: -9999px !important;
 				top: -9999px !important;
+				z-index: -9999 !important;
+				clip:rect(0px, 0px, 0px, 0px);
 			}
 		</style>
 		<script>
-			$.getJSON("/audit_stats/graph/activity", function(activity_data) {
-				activity_datum = [
-					{
-						key: "test",
-						values: activity_data,
-						color: "#0000ff"
-					}
-				];
-				nv.addGraph(function() {
-					var chart = nv.models.discreteBarChart();
-					chart.tooltip.enabled(true);
-					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
-						if (key.data.y == 1) {
-							var plural = "audit";
-						} else {
-							var plural = "audits";
-						}
-						return key.data.x + " - " + key.data.y + " " + plural;
-					})
-					chart.showXAxis(false);
-					chart.color(["#E58755"]);
-					chart.yAxis
-						.axisLabel("Audits")
-						.tickFormat(d3.format(',.0f')); // Do not show decimal points
-					d3.select("#activity_chart svg")
-						.datum(activity_datum)
-						.transition().duration(500).call(chart);
-					nv.utils.windowResize(
-						function() {
-							chart.update();
-						}
-					);
-				});
-			});
-			$.getJSON("/audit_stats/graph/my_activity", function(my_activity_data) {
-				my_activity_datum = [
-					{
-						key: "test",
-						values: my_activity_data,
-						color: "#0000ff"
-					}
-				];
-				nv.addGraph(function() {
-					var chart = nv.models.discreteBarChart();
-					chart.tooltip.enabled(true);
-					chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
-						if (key.data.y == 1) {
-							var plural = "mile";
-						} else {
-							var plural = "miles";
-						}
-						return key.data.x + " - " + key.data.y + " " + plural;
-					})
-					//chart.showXAxis(false);
-					//chart.showYAxis(false);
-					chart.margin({top: 15, right: 15, bottom: 50, left: 100})
-					chart.color(["#FAA757"]);
-					chart.yAxis
-						.axisLabel("Miles")
-						.tickFormat(d3.format(',.0f'));
-					d3.select("#distance_chart svg")
-						.datum(my_activity_datum)
-						.transition().duration(500).call(chart);
-					nv.utils.windowResize(
-						function() {
-							chart.update();
-						}
-					);
-				});
-			});
 			google.load('visualization', '1', {packages: ['corechart', 'bar']});
 			google.setOnLoadCallback(my_labels_graph);
 			function my_labels_graph() {
+				$.getJSON("/audit_stats/graph/activity", function(activity_data) {
+					activity_datum = [
+						{
+							key: "test",
+							values: activity_data,
+							color: "#0000ff"
+						}
+					];
+					nv.addGraph(function() {
+						var chart = nv.models.discreteBarChart();
+						chart.tooltip.enabled(true);
+						chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+							if (key.data.y == 1) {
+								var plural = "audit";
+							} else {
+								var plural = "audits";
+							}
+							return key.data.x + " - " + key.data.y + " " + plural;
+						})
+						chart.showXAxis(false);
+						chart.color(["#E58755"]);
+						chart.yAxis
+							.axisLabel("Audits")
+							.tickFormat(d3.format(',.0f')); // Do not show decimal points
+						d3.select("#activity_chart svg")
+							.datum(activity_datum)
+							.transition().duration(500).call(chart);
+						nv.utils.windowResize(
+							function() {
+								chart.update();
+							}
+						);
+					});
+				});
+				$.getJSON("/audit_stats/graph/my_activity", function(my_activity_data) {
+					my_activity_datum = [
+						{
+							key: "test",
+							values: my_activity_data,
+							color: "#0000ff"
+						}
+					];
+					nv.addGraph(function() {
+						var chart = nv.models.discreteBarChart();
+						chart.tooltip.enabled(true);
+						chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+							if (key.data.y == 1) {
+								var plural = "mile";
+							} else {
+								var plural = "miles";
+							}
+							return key.data.x + " - " + key.data.y + " " + plural;
+						})
+						//chart.showXAxis(false);
+						//chart.showYAxis(false);
+						chart.margin({top: 15, right: 15, bottom: 50, left: 100})
+						chart.color(["#FAA757"]);
+						chart.yAxis
+							.axisLabel("Miles")
+							.tickFormat(d3.format(',.0f'));
+						d3.select("#distance_chart svg")
+							.datum(my_activity_datum)
+							.transition().duration(500).call(chart);
+						nv.utils.windowResize(
+							function() {
+								chart.update();
+							}
+						);
+					});
+				});
 				$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
 					var my_labels_datum = google.visualization.arrayToDataTable(my_labels_data);
 					var options = {
