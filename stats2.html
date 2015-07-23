@@ -27,6 +27,10 @@
 				bottom:50%;
 				width:100%;
 			}
+			.block {
+				display: inline-block;
+				width: 20%;
+			}
 		</style>
 		<script src='lib/mapbox.js'></script>
 		<script src="src/Progress/Streets_personal.js"></script>
@@ -87,6 +91,12 @@
 						);
 					});
 				});
+				$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
+					$("#curb_ramps_num").html(my_labels_data[1][1])
+					$("#missing_curb_ramps_num").html(my_labels_data[2][1])
+					$("#obstacles_num").html(my_labels_data[3][1])
+					$("#surface_problems_num").html(my_labels_data[4][1])
+				});
 			}
 			$(document).ready(function() {
 				my_labels_graph();
@@ -96,10 +106,37 @@
 	</head>
 	<body>
 		<div id="map"></div>
+		<div id="loading" style="z-index: 100;">
+			<img src="/resources/ajax-loader.gif" />
+			Loading map... Please wait
+		</div>
 		<div style="width: 90%; margin-left: 5%; top: 50%; position: absolute;">
-			<div id="loading">
-				<img src="/resources/ajax-loader.gif" />
-				Loading map... Please wait
+			<h1>Labels</h1>
+			<div id="block_container">
+				<div class="block">
+					<img src="/resources/StatusPage_v1b-003.png" />
+					<span id="curb_ramps_num">
+						<img src="/resources/ajax-loader.gif" />
+					</span>
+				</div>
+				<div class="block">
+					<img src="/resources/StatusPage_v1b-004.png" />
+					<span id="missing_curb_ramps_num">
+						<img src="/resources/ajax-loader.gif" />
+					</span>
+				</div>
+				<div class="block">
+					<img src="/resources/StatusPage_v1b-005.png" />
+					<span id="obstacles_num">
+						<img src="/resources/ajax-loader.gif" />
+					</span>
+				</div>
+				<div class="block">
+					<img src="/resources/StatusPage_v1b-006.png" />
+					<span id="surface_problems_num">
+						<img src="/resources/ajax-loader.gif" />
+					</span>
+				</div>
 			</div>
 			<h1>Activities</h1>
 			<div id="activity_chart">
