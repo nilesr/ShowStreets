@@ -6,29 +6,50 @@
 		<link rel="stylesheet" href="/style.css">
 		<title>Placeholder title</title>
 		<script>
+			var onload = function() {
+				resizeWrapper();
+				load();
+				$(window).on('hashchange', function() {
+					load();
+				});
+			}
 			var resizeWrapper = function() {
 				$("#wrapper").css("height", "100%").css("height", "-=".concat($("#header").css("height"), "px"));
 			};
-			var load = function(location) {
-				document.getElementById("iframe").src = location;
+			var load = function() {
+				switch (window.location.hash.substring(1)) {
+					case "stats":
+						load_src("/stats.html");
+						break;
+					case "about":
+						load_src("/about.html");
+						break;
+					default:
+					case "audit":
+						load_src("/select.html");
+						break;
+					}
+			}
+			var load_src = function(src) {
+				document.getElementById("iframe").src = src;
 			}
 		</script>
 	</head>
-	<body onLoad="resizeWrapper();" >
+	<body onLoad="onload();" >
 		<div class="header" id="header">
 			<div class="pure-menu pure-menu-horizontal home-menu">
 				<a href="#" class="pure-menu-heading">Placeholder Title</a>
 				<ul class="pure-menu-list">
 					<li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
-					<li class="pure-menu-item"><a href="#" onclick="load('/select.html')" class="pure-menu-link">Audit</a></li>
-					<li class="pure-menu-item"><a href="#" onclick="load('/stats.html')" class="pure-menu-link">Stats</a></li>
-					<li class="pure-menu-item"><a href="#" onclick="load('/about.html')" class="pure-menu-link">About Us</a></li>
+					<li class="pure-menu-item"><a href="#audit" onclick="load()" class="pure-menu-link">Audit</a></li>
+					<li class="pure-menu-item"><a href="#stats" onclick="load()" class="pure-menu-link">Stats</a></li>
+					<li class="pure-menu-item"><a href="#about" onclick="load()" class="pure-menu-link">About Us</a></li>
 				</ul>
 			</div>
 		</div>
 		<div style="height: 100%; width: 100%;position: absolute;" id="wrapper">
 			<!-- The "seamless" tag is apparently not accepted in any modern browser, despite being introduced in the HTML5 standard. This makes the extra CSS nessescary -->
-			<iframe src="/select.html" seamless style="border: none; width: 100%; height: 100%; display:block;" scrolling=no id="iframe">
+			<iframe src="/dev/null" seamless style="border: none; width: 100%; height: 100%; display:block;" scrolling=no id="iframe">
 				Sorry, your browser does not allow or does not support iframes. Please click the "Audit" button in the top right to continue.
 			</iframe>
 		</div>
