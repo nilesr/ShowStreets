@@ -100,9 +100,10 @@ Progress.streets = (function Streets($, L) {
 			}
 			var currentpoint = basepoint;
 			var donepoints = [basepoint];
+			var nextpoint = currentpoint;
 			while (true) {
 				for (var i = 0; i < points.length; i++) {
-					if (angleTo(currentpoint, points[i]) > angleTo(currentpoint, donepoints[-1])) {
+					if (angleTo(currentpoint, points[i]) < angleTo(currentpoint, nextpoint) {
 						nextpoint = points[i];
 					}
 				}
