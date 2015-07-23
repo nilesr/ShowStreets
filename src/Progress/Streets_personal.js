@@ -103,7 +103,7 @@ Progress.streets = (function Streets($, L) {
 			var nextpoint = currentpoint;
 			while (true) {
 				for (var i = 0; i < points.length; i++) {
-					if (angleTo(currentpoint, points[i]) < angleTo(currentpoint, nextpoint) {
+					if (angleTo(currentpoint, points[i]) < angleTo(currentpoint, nextpoint)) {
 						nextpoint = points[i];
 					}
 				}
