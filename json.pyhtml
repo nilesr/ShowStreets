@@ -25,9 +25,17 @@ def color(percent, blue="00"):
 	if len(red) == 1: red = "0" + red
 	if len(green) == 1: green = "0" + green
 	return "#" + red + green + red
-data = json.load(open(os.getcwd() + "/../resources/"+ d["file"]))
-for street in data["features"]:
-	#if street["properties"]["type"] == "sidewalk": continue
-	street["properties"]["stroke"] = color(random.randint(0, 100))
+type = False
+try:
+	type = d["type"]
+except:
+	pass
+if type == "personal":
+	data = json.load(open(os.getcwd() + "/../resources/SmallMap_02_Streets.geojson"))
+else:
+	data = json.load(open(os.getcwd() + "/../resources/"+ d["file"]))
+	for street in data["features"]:
+		#if street["properties"]["type"] == "sidewalk": continue
+		street["properties"]["stroke"] = color(random.randint(0, 100))
 %>
 ${json.dumps(data)}

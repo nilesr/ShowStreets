@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		<script src="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.min.js" charset="utf-8"></script>
+		<link rel="stylesheet" href="https://cdn.rawgit.com/novus/nvd3/v1.8.1/build/nv.d3.css" />
+		<script src="lib/jquery-1.7.2.min.js"></script>
+		<style>
+			@font-face {
+				font-family: HelveticaNeueUltraLight;
+				src: url("resources/HelveticaNeue-UltraLight.otf") format("opentype");
+			}
+			body {
+				font-family: HelveticaNeueUltraLight, sans-serif;
+				letter-spacing: 1px;
+			}
+			svg {
+				letter-spacing: 0px;
+			}
+			h2 {
+				font-weight: bold;
+				margin: 0px;
+			}
+			#map {
+				position:absolute;
+				top:0;
+				bottom:50%;
+				width:100%;
+			}
+		</style>
+		<script src='lib/mapbox.js'></script>
+		<script src="src/Progress/Streets_personal.js"></script>
+		<script src="src/Progress/Core.js"></script>
+		<script>
+			var load = function(id, type, ziptype) {
+				str = "#feature-".concat(id.toString());
+				if (type === "MultiPolygon" || type === "Polygon") {
+					$.get("/audit_stats/area_percent/".concat(ziptype,"/",id), function(data) { 
+						$(str).html(data.trim().concat("% audited."));
+					});
+				} else {
+					$.get("/audit_stats/total_audits/".concat(id), function(data) { 
+						if (data.trim() == "1") {
+						  var plural = "person has";
+						} else {
+						  var plural = "people have";
+						}
+						$(str).html(data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">Audit</a>"));
+					});
+				}
+			};
+		</script>
+		<link href='css/mapbox.css' rel='stylesheet' />
+		<script>
+			function my_labels_graph() {
+				$.getJSON("/audit_stats/graph/activity", function(activity_data) {
+					activity_datum = [
+						{
+							key: "test",
+							values: activity_data,
+							color: "#0000ff"
+						}
+					];
+					nv.addGraph(function() {
+						var chart = nv.models.discreteBarChart();
+						chart.tooltip.enabled(true);
+						chart.tooltip.contentGenerator(function (key, x, y, e, graph) {
+							if (key.data.y == 1) {
+								var plural = "audit";
+							} else {
+								var plural = "audits";
+							}
+							return key.data.x + " - " + key.data.y + " " + plural;
+						})
+						chart.showXAxis(false);
+						chart.color(["#E58755"]);
+						chart.yAxis
+							.axisLabel("Audits")
+							.tickFormat(d3.format(',.0f')); // Do not show decimal points
+						d3.select("#activity_chart svg")
+							.datum(activity_datum)
+							.transition().duration(500).call(chart);
+						nv.utils.windowResize(
+							function() {
+								chart.update();
+							}
+						);
+					});
+				});
+			}
+			$(document).ready(function() {
+				my_labels_graph();
+				Progress.core.init();
+			});
+		</script>
+	</head>
+	<body>
+		<div id="map"></div>
+		<div style="width: 90%; margin-left: 5%; top: 50%; position: absolute;">
+			<div id="loading">
+				<img src="/resources/ajax-loader.gif" />
+				Loading map... Please wait
+			</div>
+			<h1>Activities</h1>
+			<div id="activity_chart">
+				<svg style="height:20%; width: 95%;" />
+			</div>
+		</div>
+	</body>
+</html>
