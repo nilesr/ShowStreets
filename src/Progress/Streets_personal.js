@@ -1,5 +1,13 @@
 var Progress = Progress || {};
-
+var angleTo = function(pa, pb) {
+	if (pa == undefined) return -1000;
+	if (pb == undefined) return -1000;
+	var result = Math.atan((pb[1] - pa[1])/(pb[0] - pa[0]));
+	if (result < 0) {
+		result = result + (2 * Math.PI);
+	}
+	return result;
+}
 Progress.streets = (function Streets($, L) {
 	var self = {};
 
@@ -57,7 +65,7 @@ Progress.streets = (function Streets($, L) {
 		}
 		L.geoJson(polygon, {
 			style: function(feature) {
-				return {fillColor: "#ffffff", "fillOpacity": 0.5};
+				return {fillColor: "#000000", "fillOpacity": 0.5};
 			}
 		}).addTo(Progress.map);
 		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
@@ -78,6 +86,34 @@ Progress.streets = (function Streets($, L) {
 				onEachFeature: onEachFeature
 			});
 			streetmap.addTo(Progress.map);
+			var points = [];
+			for (var i = 0; i < data["features"].length; i++) {
+				for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
+					points.push(data["features"][i]["geometry"]["coordinates"][s]);
+				}
+			}
+			var basepoint = points[0];
+			for (var i = 0; i < points.length; i++) {
+				if (points[i][0] < basepoint[0]) {
+					basepoint = points[i];
+				}
+			}
+			var currentpoint = basepoint;
+			var donepoints = [basepoint];
+			while (true) {
+				for (var i = 0; i < points.length; i++) {
+					if (angleTo(currentpoint, points[i]) > angleTo(currentpoint, donepoints[-1])) {
+						nextpoint = points[i];
+					}
+				}
+				donepoints.push(currentpoint);
+				currentpoint = nextpoint;
+				if (currentpoint == basepoint) {
+					break;
+				}
+				break;
+			}
+			console.log(donepoints);
 		})
 		.fail(function (result) {
 			console.log("Failed on: ", result);
