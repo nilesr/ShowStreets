@@ -1,5 +1,5 @@
 <%!
-	import json, random
+	import json, random, os
 %>
 <%
 def color(percent):
@@ -25,7 +25,7 @@ def color(percent, blue="00"):
 	if len(red) == 1: red = "0" + red
 	if len(green) == 1: green = "0" + green
 	return "#" + red + green + red
-data = json.load(open("/home/niles/ShowStreets/resources/" + d["file"]))
+data = json.load(open(os.getcwd() + "/../resources/"+ d["file"]))
 for street in data["features"]:
 	#if street["properties"]["type"] == "sidewalk": continue
 	street["properties"]["stroke"] = color(random.randint(0, 100))
