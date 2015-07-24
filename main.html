@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8 />
+		<title>GeoJSON custom markers and style</title>
+		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<script src="lib/jquery-1.7.2.min.js"></script>
+		<script src='lib/mapbox.js'></script>
+		<script>
+			var select = function(id) {
+				var children = document.getElementById("disability_select").children;
+				for (var i = 0; i < children.length; i++) {
+					children[i].className = "pure-button disability_button";
+					if (children[i].id == id) {
+						$(children[i]).addClass("pure-button-active");
+						localStorage.setItem("disability", id);
+						disability = id;
+					}
+				}
+			}
+		</script>
+		<link href='css/mapbox.css' rel='stylesheet' />
+		<style>
+			body { margin:0; padding:0; }
+			#map { position:absolute; top:0; bottom:50%; width:100%; }
+			.FeaturePopup { width: 500px; }
+			#zipRadio { position: absolute; top: 5%; right: 5%; background: #eeeeee; border-radius: 6px; }
+			#loading { position: absolute; bottom: 55%; right: 5%; font-family: sans-serif; z-index: 1;}
+			#disability_select { position: absolute; top: 10%; left: 5%; background: white; padding: 5px; }
+			#back { position: absolute; top: 5%; left: 5%; background: white; padding: 5px; visibility: visible; }
+			.disability { height: 20px; width: 20px; }
+			.disability_button { margin: 2px; }
+		</style>
+		<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+		<link rel="stylesheet" href="http://fortawesome.github.io/Font-Awesome/assets/font-awesome/css/font-awesome.css" />
+	</head>
+	<body>
+		<div id='map'></div>
+		<div id="zipRadio">
+			<form>
+				<input type="radio" name="group" id="zip_zip" disabled />Zip code<br />
+				<input type="radio" name="group" id="zip_neighborhood" disabled />Neighborhood
+			</form>
+		</div>
+		<div id="loading">
+			<div id="loading_zip">
+				<img src="/resources/ajax-loader.gif" />
+				Loading zip code map... Please wait.
+			</div>
+			<div id="loading_neighborhood">
+				<img src="/resources/ajax-loader.gif" />
+				Loading neighborhood map... Please wait.
+			</div>
+		</div>
+		<div id="back">
+			<button class="pure-button">
+				<span class="fa fa-chevron-left"></span>
+				<span class="fa fa-chevron-left"></span>
+				<span class="fa fa-chevron-left"></span>
+			</button>
+		</div>
+		<div id="disability_select">
+			<button id="image3" class="pure-button disability_button pure-button-disabled" onclick="select('image3')"><img class="disability" src="/resources/image3.png" /></button><br />
+			<button id="image4" class="pure-button disability_button pure-button-disabled" onclick="select('image4')"><img class="disability" src="/resources/image4.png" /></button><br />
+			<button id="image5" class="pure-button disability_button pure-button-disabled" onclick="select('image5')"><img class="disability" src="/resources/image5b.png" /></button><br />
+			<button id="image6" class="pure-button disability_button pure-button-disabled" onclick="select('image6')"><img class="disability" src="/resources/image6.png" /></button>
+		</div>
+		<script src="src/Progress/Core.js"></script>
+		<script src="src/Progress/Streets_main.js"></script>
+		<script>
+			$(document).ready(function () {
+				Progress.core.init();
+				if (localStorage.getItem("zip") === "true") {
+					$("#zip_zip").prop("checked", true);
+					$("#zip_neighborhood").prop("checked", false);
+				} else if (localStorage.getItem("zip") === "false") {
+					$("#zip_zip").prop("checked", false);
+					$("#zip_neighborhood").prop("checked", true);
+				} else if (localStorage.getItem("zip") === null) {
+					$("#zip_zip").prop("checked", true);
+					localStorage.setItem("zip", true);
+				} else { alert("Error? ".concat(localStorage.getItem("zip"))); }
+				$("#zip_zip").prop("disabled", false);
+				$("#zip_neighborhood").prop("disabled", false);
+
+				var children = document.getElementById("disability_select").children;
+				var disability = localStorage.getItem("disability");
+				for (var i = 0; i < children.length; i++) {
+					$(children[i]).removeClass("pure-button-disabled");
+					if (children[i].id == disability) {
+						$(children[i]).addClass("pure-button-active");
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
