@@ -143,7 +143,29 @@ Progress.streets = (function Streets($, L) {
 							"geometry": {
 								"type": "Polygon",
 								"coordinates": [
-									donepoints2
+									donepoints2,
+									[
+										[
+											180,
+											-180
+										],
+										[
+											180,
+											180
+										],
+										[
+											-180,
+											180
+										],
+										[
+											-180,
+											-180
+										],
+										[
+											180,
+											-180
+										]
+									]
 								]
 							}
 						}
@@ -152,7 +174,7 @@ Progress.streets = (function Streets($, L) {
 				//console.log(JSON.stringify(polygon, null));
 				L.geoJson(polygon, {
 					style: function(feature) {
-						return {fillColor: "#000000", "fillOpacity": 0.5};
+						return {fillColor: "#000000", fillOpacity: 0.5, weight: 0};
 					}
 				}).addTo(Progress.map);
 				return d.promise()
