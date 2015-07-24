@@ -11,6 +11,9 @@ var cmp = function(x, y) {
 var turn = function(p, q, r) {
 	return cmp((q[0] - p[0])*(r[1] - p[1]) - (r[0] - p[0])*(q[1] - p[1]), 0)
 }
+var distance = function(a, b) {
+	return Math.sqrt(Math.pow(b[1]-a[1], 2)+Math.pow(b[0]-a[0], 2));
+}
 Progress.streets = (function Streets($, L) {
 	var self = {};
 
@@ -113,7 +116,7 @@ Progress.streets = (function Streets($, L) {
 				for (var i = 0; true; i++) {
 					donepoints[i] = pointOnHull
 					for (var j = 0; j < points.length; j++) {
-						if ( endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1) {
+						if ( (endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1 ) /* && distance(endpoint, points[j]) < 0.004 */ ){
 							endpoint = points[j];
 						}
 					}
