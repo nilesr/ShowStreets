@@ -33,42 +33,6 @@ Progress.streets = (function Streets($, L) {
 				load(feature.properties.id, feature.geometry.type, null);
 			});
 		}
-		/*var polygon = {
-			"type": "FeatureCollection",
-			"features": [
-				{
-					"type": "Feature",
-					"properties": {},
-					"geometry": {
-						"type": "Polygon",
-						"coordinates": [
-							[
-								[
-									180,
-									-180
-								],
-								[
-									180,
-									180
-								],
-								[
-									-180,
-									180
-								],
-								[
-									-180,
-									-180
-								],
-								[
-									180,
-									-180
-								]
-							]
-						]
-					}
-				}
-			]
-		}*/
 		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
 		var sidewalkmap = "test";
 		var streetmap = "test";
