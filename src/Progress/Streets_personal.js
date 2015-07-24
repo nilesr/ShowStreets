@@ -1,12 +1,15 @@
 var Progress = Progress || {};
-var angleTo = function(pa, pb) {
-	if (pa == undefined) return -1000;
-	if (pb == undefined) return -1000;
-	var result = Math.atan((pb[1] - pa[1])/(pb[0] - pa[0]));
-	if (result < 0) {
-		result = result + (2 * Math.PI);
+var cmp = function(x, y) {
+	if (x > y) {
+		return 1
 	}
-	return result;
+	if (x == y) {
+		return 0
+	}
+	return -1
+}
+var turn = function(p, q, r) {
+	return cmp((q[0] - p[0])*(r[1] - p[1]) - (r[0] - p[0])*(q[1] - p[1]), 0)
 }
 Progress.streets = (function Streets($, L) {
 	var self = {};
@@ -27,7 +30,7 @@ Progress.streets = (function Streets($, L) {
 				load(feature.properties.id, feature.geometry.type, null);
 			});
 		}
-		var polygon = {
+		/*var polygon = {
 			"type": "FeatureCollection",
 			"features": [
 				{
@@ -62,12 +65,7 @@ Progress.streets = (function Streets($, L) {
 					}
 				}
 			]
-		}
-		L.geoJson(polygon, {
-			style: function(feature) {
-				return {fillColor: "#000000", "fillOpacity": 0.5};
-			}
-		}).addTo(Progress.map);
+		}*/
 		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
 		var sidewalkmap = "test";
 		var streetmap = "test";
@@ -87,34 +85,84 @@ Progress.streets = (function Streets($, L) {
 			});
 			streetmap.addTo(Progress.map);
 			var points = [];
-			for (var i = 0; i < data["features"].length; i++) {
-				for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
-					points.push(data["features"][i]["geometry"]["coordinates"][s]);
-				}
-			}
-			var basepoint = points[0];
-			for (var i = 0; i < points.length; i++) {
-				if (points[i][0] < basepoint[0]) {
-					basepoint = points[i];
-				}
-			}
-			var currentpoint = basepoint;
-			var donepoints = [basepoint];
-			var nextpoint = currentpoint;
-			while (true) {
-				for (var i = 0; i < points.length; i++) {
-					if (angleTo(currentpoint, points[i]) < angleTo(currentpoint, nextpoint)) {
-						nextpoint = points[i];
+			function first() {
+				d = new $.Deferred();
+				for (var i = 0; i < data["features"].length; i++) {
+					for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
+						points.push(data["features"][i]["geometry"]["coordinates"][s]);
 					}
 				}
-				donepoints.push(currentpoint);
-				currentpoint = nextpoint;
-				if (currentpoint == basepoint) {
-					break;
-				}
-				break;
+				return d.promise()
 			}
-			console.log(donepoints);
+			var basepoint = "temporary value";
+			function second() {
+				d = new $.Deferred();
+				basepoint = points[0];
+				for (var i = 0; i < points.length; i++) {
+					if (points[i][0] < basepoint[0]) {
+						basepoint = points[i];
+					}
+				}
+				return d.promise()
+			}
+			var donepoints = [];
+			function third() {
+				d = new $.Deferred();
+				var endpoint = basepoint;
+				var pointOnHull = endpoint;
+				for (var i = 0; true; i++) {
+					donepoints[i] = pointOnHull
+					for (var j = 0; j < points.length; j++) {
+						if ( endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1) {
+							endpoint = points[j];
+						}
+					}
+					i += 1;
+					pointOnHull = endpoint;
+					if (endpoint == donepoints[0]) {
+						break;
+					}
+				}
+				return d.promise()
+			}
+			function fourth() {
+				d = new $.Deferred();
+				donepoints.push(donepoints[0])
+				var donepoints2 = [];
+				for (var i = 0; i < donepoints.length; i++) {
+					if (donepoints[i]) {
+						donepoints2.push(donepoints[i]);
+					}
+				}
+				var polygon = {
+					"type": "FeatureCollection",
+					"features": [
+						{
+							"type": "Feature",
+							"properties": {},
+							"geometry": {
+								"type": "Polygon",
+								"coordinates": [
+									donepoints2
+								]
+							}
+						}
+					]
+				}
+				//console.log(JSON.stringify(polygon, null));
+				L.geoJson(polygon, {
+					style: function(feature) {
+						return {fillColor: "#000000", "fillOpacity": 0.5};
+					}
+				}).addTo(Progress.map);
+				return d.promise()
+			}
+			function all() {
+				var d = jQuery.Deferred(), p = d.promise();
+				p.then(first).then(second).then(third).then(fourth);
+				d.resolve();
+			}
+			all();
 		})
 		.fail(function (result) {
 			console.log("Failed on: ", result);
