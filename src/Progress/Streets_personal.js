@@ -63,13 +63,6 @@ Progress.streets = (function Streets($, L) {
 			//var radius = 0.0015;
 			var radius = 0.0008;
 			for (var i = 0; i < points.length; i++) {
-				/*var coords = [
-					[[points[i][0] - radius, points[i][1] - radius],
-					[points[i][0] + radius, points[i][1] - radius],
-					[points[i][0] + radius, points[i][1] + radius],
-					[points[i][0] - radius, points[i][1] + radius],
-					[points[i][0] - radius, points[i][1] - radius]]
-				];*/
 				var coords = [[]];
 				var complexity_constant = 20;
 				var vertical_stretch_factor = 0.8;
@@ -92,7 +85,7 @@ Progress.streets = (function Streets($, L) {
 				"type": "FeatureCollection",
 				"features": squares
 			}
-			squares3 = turf.merge(squares2, function(err, out) {alert(out);});
+			squares3 = turf.merge(squares2);
 			console.log(JSON.stringify(squares2, null));
 			squares3.geometry.coordinates.push([
 				[
