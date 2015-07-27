@@ -157,11 +157,10 @@ Progress.streets = (function Streets($, L) {
 		var updateLayers = function() {
 			zip = document.getElementById("zip_zip").checked;
 			localStorage.setItem("zip", zip);
-			alert(Progress.map.getZoom());
-			if (Progress.map.getZoom() == 14) {
-				document.getElementById("back").style.visiblity = "hidden";
+			if (Progress.map.getZoom() == 11) {
+				document.getElementById("back").style.visibility = "hidden";
 			} else {
-				document.getElementById("back").style.visiblity = "visible";
+				document.getElementById("back").style.visibility = "visible";
 			}
 			if (Progress.map.getZoom() < 14) { // Used to be 16. 
 				if (Progress.map.hasLayer(sidewalkmap)) {

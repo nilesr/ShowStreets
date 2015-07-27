@@ -60,10 +60,21 @@
 			</button>
 		</div>
 		<div id="disability_select">
-			<button id="image3" class="pure-button disability_button pure-button-disabled" onclick="select('image3')"><img class="disability" src="/resources/image3.png" /></button><br />
-			<button id="image4" class="pure-button disability_button pure-button-disabled" onclick="select('image4')"><img class="disability" src="/resources/image4.png" /></button><br />
-			<button id="image5" class="pure-button disability_button pure-button-disabled" onclick="select('image5')"><img class="disability" src="/resources/image5b.png" /></button><br />
-			<button id="image6" class="pure-button disability_button pure-button-disabled" onclick="select('image6')"><img class="disability" src="/resources/image6.png" /></button>
+			<button id="image3" class="pure-button disability_button pure-button-disabled" onclick="select('image3')">
+				<img class="disability" src="/resources/image3.png" />
+			</button>
+			<br />
+			<button id="image4" class="pure-button disability_button pure-button-disabled" onclick="select('image4')">
+				<img class="disability" src="/resources/image4.png" />
+			</button>
+			<br />
+			<button id="image5" class="pure-button disability_button pure-button-disabled" onclick="select('image5')">
+				<img class="disability" src="/resources/image5b.png" />
+			</button>
+			<br />
+			<button id="image6" class="pure-button disability_button pure-button-disabled" onclick="select('image6')">
+				<img class="disability" src="/resources/image6.png" />
+			</button>
 		</div>
 		<script src="src/Progress/Core.js"></script>
 		<script src="src/Progress/Streets_main.js"></script>
@@ -79,7 +90,9 @@
 				} else if (localStorage.getItem("zip") === null) {
 					$("#zip_zip").prop("checked", true);
 					localStorage.setItem("zip", true);
-				} else { alert("Error? ".concat(localStorage.getItem("zip"))); }
+				} else {
+					alert("Error? ".concat(localStorage.getItem("zip")));
+				}
 				$("#zip_zip").prop("disabled", false);
 				$("#zip_neighborhood").prop("disabled", false);
 
