@@ -102,9 +102,6 @@ Progress.streets = (function Streets($, L) {
 			$("#loading").html("Fatal error.");
 			console.log("Failed on: ", result);
 		});
-
-		//Progress.map.on('zoomend', function() {
-		//});
 	}
 	// Public methods
 	self.init = _init;
