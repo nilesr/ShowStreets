@@ -52,12 +52,42 @@ Progress.streets = (function Streets($, L) {
 			});
 			streetmap.addTo(Progress.map);
 			var points = [];
+			var squares = [];
+			var squares2 = [];
+			var squares3 = [];
 			function first() {
 				d = new $.Deferred();
 				for (var i = 0; i < data["features"].length; i++) {
 					for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
 						points.push(data["features"][i]["geometry"]["coordinates"][s]);
 					}
+				}
+				var points2 = [];
+				for (var i = 0; i < points.length; i++) {
+					if (points[i]) {
+						points2.push(points[i]);
+					}
+				}
+				points = points2;
+				//var squarewidth = 0.0015;
+				var squarewidth = 0.0011;
+				for (var i = 0; i < points.length; i++) {
+					squares.push({
+						"type": "Feature",
+						"properties": {
+							"fill": "#fff"
+						},
+						"geometry": {
+						"type": "Polygon",
+						"coordinates": [
+								[[points[i][0] - squarewidth, points[i][1] - squarewidth],
+								[points[i][0] + squarewidth, points[i][1] - squarewidth],
+								[points[i][0] + squarewidth, points[i][1] + squarewidth],
+								[points[i][0] - squarewidth, points[i][1] + squarewidth],
+								[points[i][0] - squarewidth, points[i][1] - squarewidth]]
+							]
+						}
+					});
 				}
 				return d.promise()
 			}
@@ -80,7 +110,7 @@ Progress.streets = (function Streets($, L) {
 				for (var i = 0; true; i++) {
 					donepoints[i] = pointOnHull
 					for (var j = 0; j < points.length; j++) {
-						if ( (endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1 ) /* && distance(endpoint, points[j]) < 0.004 */ ){
+						if ( (endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1 ) && distance(endpoint, points[j]) < 0.004 ){
 							endpoint = points[j];
 						}
 					}
@@ -89,6 +119,7 @@ Progress.streets = (function Streets($, L) {
 					if (endpoint == donepoints[0]) {
 						break;
 					}
+					break; // delete me later
 				}
 				return d.promise()
 			}
@@ -101,7 +132,37 @@ Progress.streets = (function Streets($, L) {
 						donepoints2.push(donepoints[i]);
 					}
 				}
-				var polygon = {
+				//console.log(JSON.stringify(squares, null));
+				squares2 = {
+					"type": "FeatureCollection",
+					"features": squares
+				}
+				squares3 = turf.merge(squares2);
+				//squares.push(donepoints2);
+				squares3.geometry.coordinates.push([
+					[
+						180,
+						-180
+					],
+					[
+						180,
+						180
+					],
+					[
+						-180,
+						180
+					],
+					[
+						-180,
+						-180
+					],
+					[
+						180,
+						-180
+					]
+				]);
+				//console.log(JSON.stringify(squares, null));
+				/*var polygon = {
 					"type": "FeatureCollection",
 					"features": [
 						{
@@ -109,37 +170,12 @@ Progress.streets = (function Streets($, L) {
 							"properties": {},
 							"geometry": {
 								"type": "Polygon",
-								"coordinates": [
-									donepoints2,
-									[
-										[
-											180,
-											-180
-										],
-										[
-											180,
-											180
-										],
-										[
-											-180,
-											180
-										],
-										[
-											-180,
-											-180
-										],
-										[
-											180,
-											-180
-										]
-									]
-								]
+								"coordinates": squares3
 							}
 						}
 					]
-				}
-				//console.log(JSON.stringify(polygon, null));
-				L.geoJson(polygon, {
+				}*/
+				L.geoJson(squares3, {
 					style: function(feature) {
 						return {fillColor: "#000000", fillOpacity: 0.5, weight: 0};
 					}
