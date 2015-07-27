@@ -53,143 +53,68 @@ Progress.streets = (function Streets($, L) {
 			streetmap.addTo(Progress.map);
 			var points = [];
 			var squares = [];
-			var squares2 = [];
-			var squares3 = [];
-			function first() {
-				d = new $.Deferred();
-				for (var i = 0; i < data["features"].length; i++) {
-					for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
+			for (var i = 0; i < data["features"].length; i++) {
+				for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
+					if (data["features"][i]["geometry"]["coordinates"][s]) {
 						points.push(data["features"][i]["geometry"]["coordinates"][s]);
 					}
 				}
-				var points2 = [];
-				for (var i = 0; i < points.length; i++) {
-					if (points[i]) {
-						points2.push(points[i]);
-					}
-				}
-				points = points2;
-				//var squarewidth = 0.0015;
-				var squarewidth = 0.0011;
-				for (var i = 0; i < points.length; i++) {
-					squares.push({
-						"type": "Feature",
-						"properties": {
-							"fill": "#fff"
-						},
-						"geometry": {
-						"type": "Polygon",
-						"coordinates": [
-								[[points[i][0] - squarewidth, points[i][1] - squarewidth],
-								[points[i][0] + squarewidth, points[i][1] - squarewidth],
-								[points[i][0] + squarewidth, points[i][1] + squarewidth],
-								[points[i][0] - squarewidth, points[i][1] + squarewidth],
-								[points[i][0] - squarewidth, points[i][1] - squarewidth]]
-							]
-						}
-					});
-				}
-				return d.promise()
 			}
-			var basepoint = "temporary value";
-			function second() {
-				d = new $.Deferred();
-				basepoint = points[0];
-				for (var i = 0; i < points.length; i++) {
-					if (points[i][0] < basepoint[0]) {
-						basepoint = points[i];
+			//var squarewidth = 0.0015;
+			var squarewidth = 0.0011;
+			for (var i = 0; i < points.length; i++) {
+				squares.push({
+					"type": "Feature",
+					"properties": {
+						"fill": "#fff"
+					},
+					"geometry": {
+					"type": "Polygon",
+					"coordinates": [
+							[[points[i][0] - squarewidth, points[i][1] - squarewidth],
+							[points[i][0] + squarewidth, points[i][1] - squarewidth],
+							[points[i][0] + squarewidth, points[i][1] + squarewidth],
+							[points[i][0] - squarewidth, points[i][1] + squarewidth],
+							[points[i][0] - squarewidth, points[i][1] - squarewidth]]
+						]
 					}
-				}
-				return d.promise()
+				});
 			}
-			var donepoints = [];
-			function third() {
-				d = new $.Deferred();
-				var endpoint = basepoint;
-				var pointOnHull = endpoint;
-				for (var i = 0; true; i++) {
-					donepoints[i] = pointOnHull
-					for (var j = 0; j < points.length; j++) {
-						if ( (endpoint == pointOnHull || turn(donepoints[i], endpoint, points[j]) == 1 ) && distance(endpoint, points[j]) < 0.004 ){
-							endpoint = points[j];
-						}
-					}
-					i += 1;
-					pointOnHull = endpoint;
-					if (endpoint == donepoints[0]) {
-						break;
-					}
-					break; // delete me later
-				}
-				return d.promise()
+			squares2 = {
+				"type": "FeatureCollection",
+				"features": squares
 			}
-			function fourth() {
-				d = new $.Deferred();
-				donepoints.push(donepoints[0])
-				var donepoints2 = [];
-				for (var i = 0; i < donepoints.length; i++) {
-					if (donepoints[i]) {
-						donepoints2.push(donepoints[i]);
-					}
+			squares3 = turf.merge(squares2);
+			squares3.geometry.coordinates.push([
+				[
+					180,
+					-180
+				],
+				[
+					180,
+					180
+				],
+				[
+					-180,
+					180
+				],
+				[
+					-180,
+					-180
+				],
+				[
+					180,
+					-180
+				]
+			]);
+			L.geoJson(squares3, {
+				style: function(feature) {
+					return {fillColor: "#000000", fillOpacity: 0.5, weight: 0};
 				}
-				//console.log(JSON.stringify(squares, null));
-				squares2 = {
-					"type": "FeatureCollection",
-					"features": squares
-				}
-				squares3 = turf.merge(squares2);
-				//squares.push(donepoints2);
-				squares3.geometry.coordinates.push([
-					[
-						180,
-						-180
-					],
-					[
-						180,
-						180
-					],
-					[
-						-180,
-						180
-					],
-					[
-						-180,
-						-180
-					],
-					[
-						180,
-						-180
-					]
-				]);
-				//console.log(JSON.stringify(squares, null));
-				/*var polygon = {
-					"type": "FeatureCollection",
-					"features": [
-						{
-							"type": "Feature",
-							"properties": {},
-							"geometry": {
-								"type": "Polygon",
-								"coordinates": squares3
-							}
-						}
-					]
-				}*/
-				L.geoJson(squares3, {
-					style: function(feature) {
-						return {fillColor: "#000000", fillOpacity: 0.5, weight: 0};
-					}
-				}).addTo(Progress.map);
-				return d.promise()
-			}
-			function all() {
-				var d = jQuery.Deferred(), p = d.promise();
-				p.then(first).then(second).then(third).then(fourth);
-				d.resolve();
-			}
-			all();
+			}).addTo(Progress.map);
 		})
 		.fail(function (result) {
+			$("#loading").html("Fatal error.");
 			console.log("Failed on: ", result);
 		});
 
