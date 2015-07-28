@@ -111,7 +111,7 @@ Progress.streets = (function Streets($, L) {
 			]);
 			L.geoJson(squares3, {
 				style: function(feature) {
-					return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3"};
+					return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3", color: "#000000"};
 				}
 			}).addTo(Progress.map);
 		})

@@ -43,7 +43,7 @@
 			<div class="pure-menu pure-menu-horizontal home-menu">
 				<a href="#" class="pure-menu-heading">Placeholder Title</a>
 				<ul class="pure-menu-list">
-					<li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+					<li class="pure-menu-item"><a href="#home" class="pure-menu-link">Home</a></li>
 					<li class="pure-menu-item"><a href="#audit" class="pure-menu-link">Audit</a></li>
 					<li class="pure-menu-item"><a href="#stats" class="pure-menu-link">Stats</a></li>
 					<li class="pure-menu-item"><a href="#about" class="pure-menu-link">About Us</a></li>
