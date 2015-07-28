@@ -29,7 +29,6 @@ Progress.streets = (function Streets($, L) {
 		var streetmap = "test";
 
 		$.getJSON("json.pyhtml?type=personal", function(data) {
-			$("#loading").html("");
 			streetmap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
@@ -114,6 +113,7 @@ Progress.streets = (function Streets($, L) {
 					return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3", color: "#000000"};
 				}
 			}).addTo(Progress.map);
+			$("#loading").html("");
 		})
 		.fail(function (result) {
 			$("#loading").html("Fatal error.");
