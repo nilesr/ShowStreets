@@ -48,9 +48,14 @@ Progress.streets = (function Streets($, L) {
 				for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
 					if (data["features"][i]["geometry"]["coordinates"][s]) { // This is necessary because some of the points are null. Dunno why
 						// These are just to make code easier to write, they will not be changed
-						var pa = data["features"][i]["geometry"]["coordinates"][s]
-						var pb = data["features"][i]["geometry"]["coordinates"][s+1]
+						var pa = data["features"][i]["geometry"]["coordinates"][s];
+						var pb = data["features"][i]["geometry"]["coordinates"][s+1]; // Because this might be null, we need the following while loop.
 						points.push(pa);
+						var a = 1;
+						while (pb === null) {
+							a++;
+							pb = data["features"][i]["geometry"]["coordinates"][s+a];
+						}
 						if (pb && distance(pa, pb) > distance_between_points) {
 							for (var k = 0; k < ( distance(pa, pb) / distance_between_points ) - 1; k += distance_between_points) {
 								points.push([pa[0] + (distance_between_points * Math.cos(angleTo(pa, pb))), pa[1] + (distance_between_points * Math.sin(angleTo(pa, pb)))]);
