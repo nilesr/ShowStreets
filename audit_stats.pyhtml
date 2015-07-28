@@ -26,7 +26,7 @@
 				["Curb ramps", random.randint(0, 20), "#AAC46C"],
 				["Missing curb ramps", random.randint(0, 20), "#FF8080"],
 				["Obstacles in path", random.randint(0, 20), "#FF7C00"],
-				["Surface problems", random.randint(0, 20), "#8080ff"]
+				["Surface problems", random.randint(0, 20), "#8080FF"]
 			]
 			f = json.dumps(data)
 	else:
