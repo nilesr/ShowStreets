@@ -37,6 +37,9 @@
 			.block img { 
 				/*height: 30px;*/
 			}
+			.squares3 {
+				filter: url(#picture_filter);
+			}
 		</style>
 		<script src='lib/mapbox.js'></script>
 		<script src="src/Progress/Streets_personal.js"></script>
@@ -111,6 +114,7 @@
 		</script>
 	</head>
 	<body>
+		<svg><filter id="picture_filter"><feGaussianBlur stdDeviation="15" /></filter></svg>
 		<div id="map"></div>
 		<div id="loading" style="z-index: 100;">
 			<img src="/resources/ajax-loader.gif" />

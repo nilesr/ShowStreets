@@ -62,10 +62,10 @@ Progress.streets = (function Streets($, L) {
 			}
 			//var radius = 0.0015;
 			var radius = 0.0008;
+			var complexity_constant = 10;
+			var vertical_stretch_factor = 0.8;
 			for (var i = 0; i < points.length; i++) {
 				var coords = [[]];
-				var complexity_constant = 20;
-				var vertical_stretch_factor = 0.8;
 				for (var j = 0; j < complexity_constant; j++) {
 					coords[0].push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant)]);
 				}
@@ -111,7 +111,7 @@ Progress.streets = (function Streets($, L) {
 			]);
 			L.geoJson(squares3, {
 				style: function(feature) {
-					return {fillColor: "#000000", fillOpacity: 0.5, weight: 0};
+					return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3"};
 				}
 			}).addTo(Progress.map);
 		})
