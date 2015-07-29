@@ -47,6 +47,11 @@
 				right: 20%;
 				font-size: 2em;
 			}
+			.FeaturePopup {
+				width: 600px;
+				font-family: "Open Sans", "Oxygen", sans-serif;
+				letter-spacing: 0px;
+			}
 		</style>
 		<script src='lib/mapbox.js'></script>
 		<script src="src/Progress/Streets_personal.js"></script>
@@ -61,11 +66,11 @@
 				} else {
 					$.get("/audit_stats/total_audits/".concat(id), function(data) { 
 						if (data.trim() == "1") {
-						  var plural = "person has";
+						  var plural = "day";
 						} else {
-						  var plural = "people have";
+						  var plural = "days";
 						}
-						$(str).html(data.concat(" ", plural, " audited this way. <a href=\"/audit/", id, "\">Audit</a>"));
+						$(str).html("You audited this way ".concat(data, " ", plural, " ago. Id: ", id));
 					});
 				}
 			};
