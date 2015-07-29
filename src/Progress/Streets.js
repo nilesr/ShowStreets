@@ -118,8 +118,7 @@ Progress.streets = (function Streets($, L) {
 				onEachFeature: onEachFeatureWrapper
 			});
 			streetmap.addTo(Progress.map);
-		})
-		.fail(function (result) {
+		}).fail(function (result) {
 			console.log("Failed on: ", result);
 		});
 

@@ -33,7 +33,14 @@ Progress.streets = (function Streets($, L) {
 			streetmap.addTo(Progress.map);
 			var points = [];
 			var squares = [];
-			var distance_between_points = .00075;
+			// Even with a complexity_constant of 3 and a distance_between_points of .0008, it still takes ~30 seconds to load.
+			// With a complexity_constant of 128 and the same distance_between_points it takes 1:15 to load. 
+			var complexity_constant = 4;//10;
+			var vertical_stretch_factor = 0.8;
+			//var radius = 0.0015;
+			var radius = 0.0008;
+			//var distance_between_points = (1/vertical_stretch_factor)*radius/2 + .00001
+			var distance_between_points = radius;
 			for (var i = 0; i < data["features"].length; i++) {
 				for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
 					if (data["features"][i]["geometry"]["coordinates"][s]) { // This is necessary because some of the points are null. Dunno why
@@ -54,10 +61,6 @@ Progress.streets = (function Streets($, L) {
 					}
 				}
 			}
-			//var radius = 0.0015;
-			var radius = 0.0008;
-			var complexity_constant = 10;
-			var vertical_stretch_factor = 0.8;
 			for (var i = 0; i < points.length; i++) {
 				var coords = [[]];
 				for (var j = 0; j < complexity_constant; j++) {
@@ -80,7 +83,6 @@ Progress.streets = (function Streets($, L) {
 				"features": squares
 			}
 			squares3 = turf.merge(squares2);
-			console.log(JSON.stringify(squares2, null));
 			squares3.geometry.coordinates.push([
 				[
 					180,
