@@ -16,7 +16,6 @@ var distance = function(pa, pb) {
 }
 Progress.streets = (function Streets($, L) {
 	var self = {};
-
 	function _init() {
 		// Styling: http://leafletjs.com/examples/geojson.html
 		// http://leafletjs.com/reference.html#path-dasharray
@@ -30,7 +29,6 @@ Progress.streets = (function Streets($, L) {
 		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
 		var sidewalkmap = "test";
 		var streetmap = "test";
-
 		$.getJSON("json.pyhtml?type=personal", function(data) {
 			streetmap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
@@ -131,7 +129,6 @@ Progress.streets = (function Streets($, L) {
 	}
 	// Public methods
 	self.init = _init;
-
 	return self;
 }($, L))
 
