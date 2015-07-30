@@ -35,6 +35,13 @@
 			}
 			var load_src = function(src) {
 				document.getElementById("iframe").src = src;
+				$("a").each(function() {
+					if ($(this).attr("href") == window.location.hash) {
+						$(this).addClass("pure-menu-selected");
+					} else {
+						$(this).removeClass("pure-menu-selected");
+					}
+				});
 			}
 		</script>
 	</head>

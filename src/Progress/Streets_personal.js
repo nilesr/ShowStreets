@@ -1,4 +1,12 @@
 var Progress = Progress || {};
+var polyToBullshit = function(square) {
+	var final = "POLYGON((";
+	for (var i = 0; i < square.length; i++) {
+		var f = square[i]
+		final = final.concat(f[0], " ", f[1], ", ")
+	}
+	return final.slice(0, -2).concat("))");
+}
 var angleTo = function(pa, pb) {
 	return Math.atan((pb[1] - pa[1])/(pb[0] - pa[0])); // Returns in radians
 }
@@ -65,28 +73,22 @@ Progress.streets = (function Streets($, L) {
 					}
 				}
 				for (var i = 0; i < points.length; i++) {
-					var coords = [[]];
+					var coords = [];
 					for (var j = 0; j < complexity_constant; j++) {
-						coords[0].push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant + (Math.PI / 4)), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant + (Math.PI / 4))]); // The extra pi/4 is so that if you have a complexity_constant of 4, the squares are aligned east/west instead of 45° off.
+						coords.push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant + (Math.PI / 4)), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant + (Math.PI / 4))]); // The extra pi/4 is so that if you have a complexity_constant of 4, the squares are aligned east/west instead of 45° off.
 					}
-					coords[0].push(coords[0][0]);
-					squares.push({
-						"type": "Feature",
-						"properties": {
-							"fill": "#fff"
-						},
-						"geometry": {
-						"type": "Polygon",
-						"coordinates": coords
-						}
-					});
+					coords.push(coords[0]);
+					squares.push(coords);
 				}
-				squares2 = {
-					"type": "FeatureCollection",
-					"features": squares
+				var reader = new jsts.io.WKTReader();
+				var parser = new jsts.io.GeoJSONParser();
+				var base = reader.read(polyToBullshit(squares[0]));
+				for (var i = 1; i < squares.length; i++) {
+					base = base.union(reader.read(polyToBullshit(squares[i])));
 				}
-				squares3 = turf.merge(squares2);
-				squares3.geometry.coordinates.push([
+				var squares2 = parser.write(base);
+				//console.log(JSON.stringify(squares2, null));
+				squares2.coordinates.push([
 					[
 						180,
 						-180
@@ -108,6 +110,10 @@ Progress.streets = (function Streets($, L) {
 						-180
 					]
 				]);
+				var squares3 = {
+					"type": "FeatureCollection",
+					"features": [squares2]
+				};
 				L.geoJson(squares3, {
 					style: function(feature) {
 						return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3", color: "#000000"};
