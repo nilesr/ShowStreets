@@ -56,7 +56,7 @@
 			}
 			#load_fog { position: absolute; top: 5%; left: 5%; background: white; padding: 5px; z-index: 10; }
 			.load_fog_button {
-				font-family: "Oxygen", sans-serif !important;
+				font-family: "Open Sans", "Oxygen", sans-serif !important;
 				border-radius: 4px !important;
 				text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 			}
@@ -114,11 +114,9 @@
 						d3.select("#activity_chart svg")
 							.datum(activity_datum)
 							.transition().duration(500).call(chart);
-						nv.utils.windowResize(
-							function() {
-								chart.update();
-							}
-						);
+						nv.utils.windowResize(function() {
+							chart.update();
+						});
 					});
 				});
 				$.getJSON("/audit_stats/graph/my_labels", function(my_labels_data) {
