@@ -75,7 +75,8 @@ Progress.streets = (function Streets($, L) {
 				for (var i = 0; i < points.length; i++) {
 					var coords = [];
 					for (var j = 0; j < complexity_constant; j++) {
-						coords.push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant + (Math.PI / 4)), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant + (Math.PI / 4))]); // The extra pi/4 is so that if you have a complexity_constant of 4, the squares are aligned east/west instead of 45° off.
+						coords.push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant + (Math.PI / 4)), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant + (Math.PI / 4))]);
+						// The extra pi/4 is so that if you have a complexity_constant of 4, the squares are aligned east/west instead of 45° off.
 					}
 					coords.push(coords[0]);
 					squares.push(coords);
