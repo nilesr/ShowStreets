@@ -58,7 +58,7 @@ Progress.streets = (function Streets($, L) {
 							var pb = data["features"][i]["geometry"]["coordinates"][s+1]; // Because this might be null, we need the following while loop.
 							points.push(pa);
 							var a = 1;
-							while (pb === null) {
+							while (pb === null) { // Can't just do while !pb because if pb is undefined the while loop will become infinite
 								a++;
 								pb = data["features"][i]["geometry"]["coordinates"][s+a];
 							}
