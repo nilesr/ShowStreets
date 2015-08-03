@@ -47,8 +47,9 @@ Progress.streets = (function Streets($, L) {
 				var complexity_constant = 4; // Was 10
 				var vertical_stretch_factor = 0.8;
 				//var radius = 0.0015;
-				var radius = 0.0008;
+				var radius = 0.0006;
 				//var distance_between_points = (1/vertical_stretch_factor)*radius/2 + .00001
+				var pairs = [];
 				var distance_between_points = radius;
 				for (var i = 0; i < data["features"].length; i++) {
 					for (var s = 0; s < data["features"][i]["geometry"]["coordinates"].length; s++) {
@@ -62,10 +63,13 @@ Progress.streets = (function Streets($, L) {
 								a++;
 								pb = data["features"][i]["geometry"]["coordinates"][s+a];
 							}
-							if (pb && distance(pa, pb) > distance_between_points) {
+							/*if (pb && distance(pa, pb) > distance_between_points) {
 								for (var k = 0; k < ( distance(pa, pb) / distance_between_points ) - 1; k += distance_between_points) {
 									points.push([pa[0] + (distance_between_points * Math.cos(angleTo(pa, pb))), pa[1] + (distance_between_points * Math.sin(angleTo(pa, pb)))]);
 								}
+							}*/
+							if (pb && distance(pa, pb) > radius) {
+								pairs.push([pa, pb]);
 							}
 						}
 					}
@@ -76,6 +80,18 @@ Progress.streets = (function Streets($, L) {
 						coords.push([points[i][0] + radius * Math.sin(2 * Math.PI * j/complexity_constant + (Math.PI / 4)), points[i][1] + vertical_stretch_factor * radius * Math.cos(2 * Math.PI * j/complexity_constant + (Math.PI / 4))]);
 						// The extra pi/4 is so that if you have a complexity_constant of 4, the squares are aligned east/west instead of 45° off.
 					}
+					coords.push(coords[0]);
+					squares.push(coords);
+				}
+				for (var i = 0; i < pairs.length; i++) {
+					var pa = pairs[i][0];
+					var pb = pairs[i][1];
+					var coords = [];
+					var recip = -1 / angleTo(pa, pb);
+					coords.push([pa[0] + radius * Math.sin(recip), pa[1] + radius * Math.cos(recip)]);
+					coords.push([pa[0] - radius * Math.sin(recip), pa[1] - radius * Math.cos(recip)]);
+					coords.push([pb[0] - radius * Math.sin(recip), pb[1] - radius * Math.cos(recip)]);
+					coords.push([pb[0] + radius * Math.sin(recip), pb[1] + radius * Math.cos(recip)]);
 					coords.push(coords[0]);
 					squares.push(coords);
 				}
