@@ -27,7 +27,6 @@ Progress.streets = (function Streets($, L) {
 			});
 		}
 		// Because javascript is so bad, these have to be predefined, you can't just add "var " to the declarations below or it will define them in a local scope and they won't be accessible from the zoomend hook.
-		var sidewalkmap = "test";
 		var streetmap = "test";
 		$.getJSON("json.pyhtml?type=personal", function(data) {
 			streetmap = L.geoJson(data, {
