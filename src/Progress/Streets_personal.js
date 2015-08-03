@@ -40,9 +40,7 @@ Progress.streets = (function Streets($, L) {
 			streetmap.addTo(Progress.map);
 			var points = [];
 			var squares = [];
-			// Even with a complexity_constant of 3 and a distance_between_points of .0008, it still takes ~30 seconds to load.
-			// With a complexity_constant of 128 and the same distance_between_points it takes 1:15 to load. 
-			var complexity_constant = 4; // Was 10
+			var complexity_constant = 40; // Was 10
 			var vertical_stretch_factor = 0.8;
 			//var radius = 0.0015;
 			var radius = 0.0006;
@@ -55,17 +53,12 @@ Progress.streets = (function Streets($, L) {
 						// These are just to make code easier to write, they will not be changed
 						var pa = data["features"][i]["geometry"]["coordinates"][s];
 						var pb = data["features"][i]["geometry"]["coordinates"][s+1]; // Because this might be null, we need the following while loop.
-						points.push(pa);
 						var a = 1;
 						while (pb === null) { // Can't just do while !pb because if pb is undefined the while loop will become infinite
 							a++;
 							pb = data["features"][i]["geometry"]["coordinates"][s+a];
 						}
-						/*if (pb && distance(pa, pb) > distance_between_points) {
-							for (var k = 0; k < ( distance(pa, pb) / distance_between_points ) - 1; k += distance_between_points) {
-								points.push([pa[0] + (distance_between_points * Math.cos(angleTo(pa, pb))), pa[1] + (distance_between_points * Math.sin(angleTo(pa, pb)))]);
-							}
-						}*/
+						points.push(pa);
 						if (pb && distance(pa, pb) > radius) {
 							pairs.push([pa, pb]);
 						}
