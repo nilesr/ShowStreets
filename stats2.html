@@ -52,17 +52,6 @@
 				font-family: "Open Sans", "Oxygen", sans-serif;
 				letter-spacing: 0px;
 			}
-			#load_fog {
-				position: absolute;
-				top: 5%;
-				left: 5%;
-				z-index: 10;
-			}
-			.load_fog_button {
-				font-family: "Open Sans", "Oxygen", sans-serif !important;
-				border-radius: 4px !important;
-				text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-			}
 		</style>
 		<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 		<script src='lib/mapbox.js'></script>
@@ -137,9 +126,6 @@
 	</head>
 	<body>
 		<svg><filter id="picture_filter"><feGaussianBlur stdDeviation="15" /></filter></svg>
-		<div id="load_fog">
-			<button class="pure-button pure-button-primary load_fog_button">Load fog</button>
-		</div>
 		<div id="map"></div>
 		<div id="loading" style="z-index: 100;">
 			<img src="/resources/ajax-loader.gif" />
