@@ -99,7 +99,7 @@ Progress.streets = (function Streets($, L) {
 				},
 				onEachFeature: onEachFeatureZip
 			});
-			streetmap.addTo(Progress.map);
+			zipcodemap.addTo(Progress.map);
 			$("#loading_zip").html("");
 		})
 		.fail(function (result) {
