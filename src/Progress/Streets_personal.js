@@ -14,6 +14,20 @@ var distance = function(pa, pb) {
 	// Euclidean distance
 	return Math.abs(Math.sqrt(Math.pow(pb[1]-pa[1], 2)+Math.pow(pb[0]-pa[0], 2)));
 }
+function uniq_fast(a) {
+    var seen = {};
+    var out = [];
+    var len = a.length;
+    var j = 0;
+    for(var i = 0; i < len; i++) {
+         var item = a[i];
+         if(seen[item] !== 1) {
+               seen[item] = 1;
+               out[j++] = item;
+         }
+    }
+    return out;
+}
 Progress.streets = (function Streets($, L) {
 	var self = {};
 	function _init() {
@@ -32,7 +46,8 @@ Progress.streets = (function Streets($, L) {
 			streetmap = L.geoJson(data, {
 				pointToLayer: L.mapbox.marker.style,
 				style: function(feature) {
-					return {color: feature.properties.stroke, opacity: 0.75, weight: 3};
+					//return {color: feature.properties.stroke, opacity: 0.75, weight: 3};
+					return {color: "#000000", opacity: 0.75, weight: 3};
 				},
 				onEachFeature: onEachFeature
 			});
@@ -88,37 +103,74 @@ Progress.streets = (function Streets($, L) {
 			var reader = new jsts.io.WKTReader();
 			var parser = new jsts.io.GeoJSONParser();
 			var base = reader.read(polyToBullshit(squares[0]));
+			//squares = uniq_fast(squares);
 			for (var i = 1; i < squares.length; i++) {
 				base = base.union(reader.read(polyToBullshit(squares[i])));
 			}
 			var squares2 = parser.write(base);
-			//console.log(JSON.stringify(squares2, null));
-			squares2.coordinates.push([
-				[
-					180,
-					-180
-				],
-				[
-					180,
-					180
-				],
-				[
-					-180,
-					180
-				],
-				[
-					-180,
-					-180
-				],
-				[
-					180,
-					-180
-				]
-			]);
-			var squares3 = {
-				"type": "FeatureCollection",
-				"features": [squares2]
-			};
+			console.log(squares2)
+			if (squares2.type == "Polygon") {
+				squares2.coordinates.push([
+					[
+						180,
+						-180
+					],
+					[
+						180,
+						180
+					],
+					[
+						-180,
+						180
+					],
+					[
+						-180,
+						-180
+					],
+					[
+						180,
+						-180
+					]
+				]);
+				var squares3 = {
+					"type": "FeatureCollection",
+					"features": [squares2]
+				};
+			} else {
+				var squares3 = {
+					"type": "FeatureCollection",
+					"features": [{
+						"type": "Polygon",
+						"coordinates": []
+					}]
+				};
+				for (var i = 0; i < squares2.coordinates.length; i++) {
+					squares3.features[0].coordinates.push(squares2.coordinates[i][0]);
+				}
+				squares3.features[0].coordinates.push([
+					[
+						180,
+						-180
+					],
+					[
+						180,
+						180
+					],
+					[
+						-180,
+						180
+					],
+					[
+						-180,
+						-180
+					],
+					[
+						180,
+						-180
+					]
+				]);
+			}
+			console.log(JSON.stringify(squares3, null));
 			L.geoJson(squares3, {
 				style: function(feature) {
 					return {fillColor: "#000000", fillOpacity: 0.5, clickable: false, lineJoin: "round", className: "squares3", color: "#000000"};
@@ -127,7 +179,7 @@ Progress.streets = (function Streets($, L) {
 			$("#loading").html("");
 		})
 		.fail(function (result) {
-			$("#loading").html("Fatal error.");
+			$("#loading").html("Fatal error. ".concat(JSON.stringify(result, null)));
 			console.log("Failed on: ", result);
 		});
 	}
